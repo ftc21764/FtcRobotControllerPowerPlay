@@ -1,27 +1,25 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.Webcam;
 
-@TeleOp(name="Robot: Flexible Teleop", group="Robot")
-@Disabled
-public class FlexibleTeleop extends TekerzBaseOpmode {
+public class TekerzBaseOpmode extends OpMode {
+    protected ElapsedTime runtime = new ElapsedTime();
+    Drivetrain drivetrain = new Drivetrain();
+    Webcam webcam = new Webcam();
 
     /**
      * User defined init method
      * <p>
      * This method will be called once when the INIT button is pressed.
-     * The
      */
     @Override
     public void init() {
-        // call the init method in TekerzBaseOpmode
-        super.init();
+        drivetrain.init(this);
+        webcam.init(this);
     }
 
     /*
@@ -29,7 +27,6 @@ public class FlexibleTeleop extends TekerzBaseOpmode {
      */
     @Override
     public void init_loop() {
-        super.init_loop();
     }
 
     /*
@@ -37,7 +34,7 @@ public class FlexibleTeleop extends TekerzBaseOpmode {
      */
     @Override
     public void start() {
-        super.start();
+        runtime.reset();
     }
 
     /**
@@ -47,6 +44,16 @@ public class FlexibleTeleop extends TekerzBaseOpmode {
      */
     @Override
     public void loop() {
-        super.loop();
+        drivetrain.loop(this);
+        webcam.loop(this);
     }
+
+    public boolean isAutonomous() {
+        return this.getClass().getName().matches("Autonomous");
+    }
+
+    public boolean isTeleop() {
+        return this.getClass().getName().matches("Teleop");
+    }
+
 }

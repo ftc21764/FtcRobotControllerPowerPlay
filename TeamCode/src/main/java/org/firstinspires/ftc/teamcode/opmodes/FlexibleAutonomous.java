@@ -10,11 +10,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Webcam;
 
 @Autonomous(name="Robot: Flexible Autonomous", group="Robot")
 @Disabled
-public class FlexibleAutonomous extends OpMode {
-
-    private ElapsedTime runtime = new ElapsedTime();
-    Drivetrain drivetrain = new Drivetrain();
-    Webcam webcam = new Webcam();
+public class FlexibleAutonomous extends TekerzBaseOpmode {
 
     /**
      * User defined init method
@@ -23,8 +19,8 @@ public class FlexibleAutonomous extends OpMode {
      */
     @Override
     public void init() {
-        drivetrain.init(hardwareMap);
-        webcam.init(hardwareMap);
+        // call the init method in TekerzBaseOpmode
+        super.init();
     }
 
     /*
@@ -32,6 +28,7 @@ public class FlexibleAutonomous extends OpMode {
      */
     @Override
     public void init_loop() {
+        super.init_loop();
     }
 
     /*
@@ -39,7 +36,7 @@ public class FlexibleAutonomous extends OpMode {
      */
     @Override
     public void start() {
-        runtime.reset();
+        super.start();
     }
 
     /**
@@ -49,8 +46,6 @@ public class FlexibleAutonomous extends OpMode {
      */
     @Override
     public void loop() {
-        drivetrain.loop();
-        webcam.loop();
+        super.loop();
     }
-
 }

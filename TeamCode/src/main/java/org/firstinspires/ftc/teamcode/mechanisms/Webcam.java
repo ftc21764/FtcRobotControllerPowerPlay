@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Webcam {
-    public void init(HardwareMap hardwareMap) {
+import org.firstinspires.ftc.teamcode.opmodes.TekerzBaseOpmode;
+
+public class Webcam extends TekerzBaseMechanism {
+    public void init(TekerzBaseOpmode robot) {
 
     }
 
-    public void loop() {
+    public void loop(TekerzBaseOpmode robot) {
 
     }
 }
