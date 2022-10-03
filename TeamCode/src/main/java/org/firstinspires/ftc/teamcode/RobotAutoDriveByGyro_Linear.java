@@ -94,9 +94,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor         leftDrive   = null;
-    private DcMotor         rightDrive  = null;
-    private BNO055IMU       imu         = null;      // Control/Expansion Hub IMU
+    private DcMotor         leftDriveF   = null;
+    private DcMotor         leftDriveB   = null;
+    private DcMotor         rightDriveF  = null;
+    private DcMotor         rightDriveB  = null;
+    private BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -109,8 +111,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private double  turnSpeed     = 0;
     private double  leftSpeed     = 0;
     private double  rightSpeed    = 0;
-    private int     leftTarget    = 0;
-    private int     rightTarget   = 0;
+    private int     leftTargetF    = 0;
+    private int     leftTargetB    = 0;
+    private int     rightTargetF   = 0;
+    private int     rightTargetB   = 0;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -142,14 +146,18 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftDriveB  = hardwareMap.get(DcMotor.class, "left_driveB");
+        leftDriveF  = hardwareMap.get(DcMotor.class, "left_driveF");
+        rightDriveB = hardwareMap.get(DcMotor.class, "right_driveB");
+        rightDriveF = hardwareMap.get(DcMotor.class, "right_driveF");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveB.setDirection(DcMotor.Direction.REVERSE);
+        leftDriveF.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveB.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -158,10 +166,14 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         imu.initialize(parameters);
 
         // Ensure the robot is stationary.  Reset the encoders and set the motors to BRAKE mode
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
@@ -170,8 +182,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         }
 
         // Set the encoders for closed loop speed control, and reset the heading.
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetHeading();
 
         // Step through each leg of the path,
@@ -228,15 +242,22 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
-            leftTarget = leftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = rightDrive.getCurrentPosition() + moveCounts;
+
+            leftTargetF = leftDriveF.getCurrentPosition() + moveCounts;
+            leftTargetB = leftDriveB.getCurrentPosition() + moveCounts;
+            rightTargetF = rightDriveF.getCurrentPosition() + moveCounts;
+            rightTargetB = rightDriveB.getCurrentPosition() + moveCounts;
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
-            leftDrive.setTargetPosition(leftTarget);
-            rightDrive.setTargetPosition(rightTarget);
+            leftDriveF.setTargetPosition(leftTargetF);
+            leftDriveB.setTargetPosition(leftTargetB);
+            rightDriveF.setTargetPosition(rightTargetF);
+            rightDriveB.setTargetPosition(rightTargetB);
 
-            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDriveB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDriveB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
@@ -245,7 +266,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (leftDrive.isBusy() && rightDrive.isBusy())) {
+                   (leftDriveF.isBusy() && rightDriveF.isBusy() && leftDriveB.isBusy() && rightDriveB.isBusy())) {
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -263,8 +284,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // Stop all motion & Turn off RUN_TO_POSITION
             moveRobot(0, 0);
-            leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -386,8 +409,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightSpeed /= max;
         }
 
-        leftDrive.setPower(leftSpeed);
-        rightDrive.setPower(rightSpeed);
+        leftDriveF.setPower(leftSpeed);
+        leftDriveB.setPower(leftSpeed);
+        rightDriveF.setPower(rightSpeed);
+        rightDriveB.setPower(rightSpeed);
     }
 
     /**
@@ -399,9 +424,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         if (straight) {
             telemetry.addData("Motion", "Drive Straight");
-            telemetry.addData("Target Pos L:R",  "%7d:%7d",      leftTarget,  rightTarget);
-            telemetry.addData("Actual Pos L:R",  "%7d:%7d",      leftDrive.getCurrentPosition(),
-                    rightDrive.getCurrentPosition());
+            telemetry.addData("Target Pos LF:RF:LB:RB", "%7d:%7d:%7d:%7d",
+                    leftTargetF, rightTargetF, leftTargetB, rightTargetB);
+            telemetry.addData("Actual Pos LF:RF:LB:RB",  "%7d:%7d:%7d:%7d", leftDriveF.getCurrentPosition(),
+                    rightDriveF.getCurrentPosition(), leftDriveB.getCurrentPosition(), rightDriveB.getCurrentPosition());
         } else {
             telemetry.addData("Motion", "Turning");
         }
