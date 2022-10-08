@@ -90,7 +90,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Robot: Auto Drive By Gyro", group="Robot")
-@Disabled
+//@Disabled
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -154,10 +154,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftDriveB.setDirection(DcMotor.Direction.REVERSE);
-        leftDriveF.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveB.setDirection(DcMotor.Direction.FORWARD);
-        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveB.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveF.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveB.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
