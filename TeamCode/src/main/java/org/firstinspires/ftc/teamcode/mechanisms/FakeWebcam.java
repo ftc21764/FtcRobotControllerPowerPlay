@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.opmodes.TekerzBaseOpmode;
 
-public class Webcam extends TekerzBaseMechanism {
+public class FakeWebcam extends TekerzBaseMechanism {
     public void init(TekerzBaseOpmode robot) {
 
     }

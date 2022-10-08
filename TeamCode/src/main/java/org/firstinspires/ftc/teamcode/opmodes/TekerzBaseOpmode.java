@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
-import org.firstinspires.ftc.teamcode.mechanisms.Webcam;
+import org.firstinspires.ftc.teamcode.mechanisms.FakeDrivetrain;
 
 public class TekerzBaseOpmode extends OpMode {
     protected ElapsedTime runtime = new ElapsedTime();
-    Drivetrain drivetrain = new Drivetrain();
-    Webcam webcam = new Webcam();
+    //public FakeWebcam webcam = new FakeWebcam();
+    public FakeDrivetrain drivetrain = new FakeDrivetrain();
 
     /**
      * User defined init method
@@ -18,8 +17,8 @@ public class TekerzBaseOpmode extends OpMode {
      */
     @Override
     public void init() {
+        //webcam.init(this);
         drivetrain.init(this);
-        webcam.init(this);
     }
 
     /*
@@ -27,6 +26,11 @@ public class TekerzBaseOpmode extends OpMode {
      */
     @Override
     public void init_loop() {
+        //webcam.init_loop();
+        drivetrain.init_loop();
+
+        // This is the only place where telemetry.update should be called for all mechanisms
+        telemetry.update();
     }
 
     /*
@@ -35,6 +39,9 @@ public class TekerzBaseOpmode extends OpMode {
     @Override
     public void start() {
         runtime.reset();
+
+        //webcam.start();
+        drivetrain.start();
     }
 
     /**
@@ -44,8 +51,20 @@ public class TekerzBaseOpmode extends OpMode {
      */
     @Override
     public void loop() {
-        drivetrain.loop(this);
-        webcam.loop(this);
+        //webcam.loop();
+        drivetrain.loop();
+
+        // This is the only place where telemetry.update should be called for all mechanisms
+        telemetry.update();
+    }
+
+    /*
+     * Code to run ONCE after the driver hits STOP
+     */
+    @Override
+    public void stop() {
+        //webcam.stop();
+        drivetrain.stop();
     }
 
     public boolean isAutonomous() {
