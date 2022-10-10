@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import org.firstinspires.ftc.teamcode.opmodes.TekerzBaseOpmode;
 
-public class TekerzBaseMechanism {
+abstract public class TekerzBaseMechanism {
 
     enum GameMode {
         TELEOP_INIT,
@@ -30,6 +30,10 @@ public class TekerzBaseMechanism {
         }
     }
 
+    // Mechanism subclasses must define init_loop with 0 arguments.
+    // However we want them to pass their internal state to the superclass init_loop.
+    abstract public void init_loop();
+
     public void init_loop(String state) {
         updateCurrentState(state);
         robot.telemetry.addData(this.getClass().getName() + " Init", state);
@@ -42,6 +46,10 @@ public class TekerzBaseMechanism {
             gameMode = GameMode.AUTO_START;
         }
     }
+
+    // Mechanism subclasses must define loop with 0 arguments.
+    // However we want them to pass their internal state to the superclass loop function.
+    abstract public void loop();
 
     public void loop(String state) {
         updateCurrentState(state);
