@@ -94,11 +94,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class PowerPlayAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor         leftDriveF   = null;
-    private DcMotor         leftDriveB   = null;
-    private DcMotor         rightDriveF  = null;
-    private DcMotor         rightDriveB  = null;
-    private BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
+    protected DcMotor         leftDriveF   = null;
+    protected DcMotor         leftDriveB   = null;
+    protected DcMotor         rightDriveF  = null;
+    protected DcMotor         rightDriveB  = null;
+    protected BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -141,10 +141,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
 
-
-    @Override
-    public void runOpMode() {
-
+    protected void setupRobot(BNO055IMU.AngleUnit imuUnits) {
         // Initialize the drive system variables.
         leftDriveB  = hardwareMap.get(DcMotor.class, "left_driveB");
         leftDriveF  = hardwareMap.get(DcMotor.class, "left_driveF");
@@ -161,7 +158,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
+        parameters.angleUnit            = imuUnits;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
@@ -174,7 +171,11 @@ public class PowerPlayAutonomous extends LinearOpMode {
         leftDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
+    @Override
+    public void runOpMode() {
+        setupRobot(BNO055IMU.AngleUnit.DEGREES);
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
             telemetry.addData(">", "Robot Heading = %4.0f", getRawHeading());
