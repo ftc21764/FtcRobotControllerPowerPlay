@@ -12,9 +12,10 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
     public void runOpMode() {
         setupRobot(BNO055IMU.AngleUnit.RADIANS);
 
-        waitForStart();
-
-        if (isStopRequested()) return;
+        while (opModeInInit()) {
+            telemetry.addData(">", "Teleop mode waiting for start");
+            telemetry.update();
+        }
 
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
@@ -40,6 +41,12 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             leftDriveB.setPower(backLeftPower);
             rightDriveF.setPower(frontRightPower);
             rightDriveB.setPower(backRightPower);
+
+            telemetry.addData("Motor Powers FL:FR:BL:BR", "%7d:%7d:%7d:%7d",
+                    frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+            telemetry.addData("Gamepad 1: y:x:rx", "%7d:%7d:%7d",
+                    y, x, rx);
+            telemetry.update();
         }
     }
 }
