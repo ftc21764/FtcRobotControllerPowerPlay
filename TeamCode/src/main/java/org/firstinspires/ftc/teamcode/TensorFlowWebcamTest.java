@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -53,7 +52,7 @@ import java.util.List;
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
 //@Disabled
-public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
+public class TensorFlowWebcamTest extends LinearOpMode {
 
     /*
      * Specify the source for the Tensor Flow Model.
