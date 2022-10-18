@@ -11,6 +11,10 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
     @Override
     public void runOpMode() {
         setupRobot(BNO055IMU.AngleUnit.RADIANS);
+        leftDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeInInit()) {
             telemetry.addData(">", "Teleop mode waiting for start");
@@ -42,9 +46,9 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             rightDriveF.setPower(frontRightPower);
             rightDriveB.setPower(backRightPower);
 
-            telemetry.addData("Motor Powers FL:FR:BL:BR", "%7d:%7d:%7d:%7d",
+            telemetry.addData("Motor Powers FL:FR:BL:BR", "%7f:%7f:%7f:%7f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-            telemetry.addData("Gamepad 1: y:x:rx", "%7d:%7d:%7d",
+            telemetry.addData("Gamepad 1: y:x:rx", "%7f:%7f:%7f",
                     y, x, rx);
             telemetry.update();
         }
