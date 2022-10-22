@@ -50,7 +50,10 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
+
+//I got TensorFlow Test Working!! - Ambrose
+
+@TeleOp(name = "Test: TensorFlow Object Detection Webcam", group = "Concept")
 //@Disabled
 public class TensorFlowWebcamTest extends LinearOpMode {
 
@@ -147,6 +150,7 @@ public class TensorFlowWebcamTest extends LinearOpMode {
                             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                             telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                            //Objects detected!! -Ambrose
                         }
                         telemetry.update();
                     }
