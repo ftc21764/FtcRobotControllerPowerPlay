@@ -36,10 +36,17 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
             double frontLeftPower = (rotY + rotX + rx) / denominator;
             double backLeftPower = (rotY - rotX + rx) / denominator;
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
+
+            // scale the speed down so we don't go too fast (for testing)
+            frontLeftPower *= 0.4;
+            backLeftPower *= 0.4;
+            frontRightPower *= 0.4;
+            backRightPower *= 0.4;
 
             leftDriveF.setPower(frontLeftPower);
             leftDriveB.setPower(backLeftPower);
