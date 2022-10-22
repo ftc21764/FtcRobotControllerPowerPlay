@@ -84,7 +84,7 @@ public class TensorFlowWebcamTest extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AX6Atj//////AAABmQrjkgPTik2EgPJ10KqHivRUj752wUBoq7KTrZ9SAOotj3UHK8Xp/uDooJjeA2lhggy53aTdaagR4UhAzRon3CdXOkvppRHZt5+yEmhNpaKDJeVTt157XhK75NON/YXxW4hPYgj6V2O6Rkl6wpwL7k3Dhu0oVfSOp0pahdXaZEcu/+kMJO8Oqul6DOL9XvIMT1BZIGRcuNVsB0NcRyi5qUmOQfogLCTnAeOaJp5wOPtLpc1+gF8FsrTZhh3mqWNcxpWaTGi2NzSUgJWryN8aRN17Dgy8cfHZW5xpcb1qVlAGPpspjA/A/DOpX2BIwyfEXBDUxmnLdMZnZLi95tsnQ4PA/h+o4nIpLJwPEXc4TtOd";
 
     /**
      * vuforia is the variable we will use to store our instance of the Vuforia
