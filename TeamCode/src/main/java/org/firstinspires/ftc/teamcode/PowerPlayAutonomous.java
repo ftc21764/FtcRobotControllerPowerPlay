@@ -124,7 +124,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double     COUNTS_PER_MOTOR_REV    = 28.0 ;   // eg: GoBILDA 312 RPM Yellow Jacket
     static final double     DRIVE_GEAR_REDUCTION    = 12.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 3.0 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 3.75 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -197,25 +197,25 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         //BASE DRIVE PATH:
 
-        driveStraight(DRIVE_SPEED, 12.0, 0.0);
-        //turnToHeading( TURN_SPEED, 45.0);
-        //driveStraight(DRIVE_SPEED, 6.0, 45.0);
-        //DROP CONE LOW JUNCTION
-        //driveStraight(DRIVE_SPEED, -6.0, 45.0);
-        //turnToHeading(TURN_SPEED, -90.0);
-        //driveStraight(DRIVE_SPEED, 23.5, -90.0);
-        //turnToHeading(TURN_SPEED, 0.0);
-        //driveStraight(DRIVE_SPEED, 47.0, 0.0);
-        //turnToHeading(TURN_SPEED, -90);
+        driveStraight(DRIVE_SPEED, 3.75, 0.0);
+        turnToHeading( TURN_SPEED, 45.0);
+        driveStraight(DRIVE_SPEED, 6.0, 45.0);
+        //DROP CONE LOW JUNCTION4
+        driveStraight(DRIVE_SPEED, -6.0, 45.0);
+        turnToHeading(TURN_SPEED, -90.0);
+        driveStraight(DRIVE_SPEED, 24.5, -90.0);
+        turnToHeading(TURN_SPEED, 0.0);
+        driveStraight(DRIVE_SPEED, 49.5, 0.0);
+        turnToHeading(TURN_SPEED, -90);
         //CYCLE!!!
         //Pickup Cone
-        //driveStraight(DRIVE_SPEED, -47.0, -90.0);
-        //turnToHeading(TURN_SPEED, -135.0);
-        //driveStraight(DRIVE_SPEED, 6.0, -135.0);
+        driveStraight(DRIVE_SPEED, -47.0, -90.0);
+        turnToHeading(TURN_SPEED, -135.0);
+        driveStraight(DRIVE_SPEED, 6.0, -135.0);
         //Drop-off Cone
-        //driveStraight(DRIVE_SPEED, -6.0, -135.0);
-        //turnToHeading(TURN_SPEED, -90.0);
-        //driveStraight(DRIVE_SPEED, 47.0, -90);
+        driveStraight(DRIVE_SPEED, -6.0, -135.0);
+        turnToHeading(TURN_SPEED, -90.0);
+        driveStraight(DRIVE_SPEED, 47.0, -90);
 
         //BASE DRIVE PATH
 
