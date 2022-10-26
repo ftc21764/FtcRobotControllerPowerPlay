@@ -100,6 +100,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected DcMotor         rightDriveB  = null;
     protected BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
     protected SignalSleeveRecognizer    recognizer = null;
+    protected LinearSlide         linearSlide = null;
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -149,6 +150,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveB = hardwareMap.get(DcMotor.class, "right_driveB");
         rightDriveF = hardwareMap.get(DcMotor.class, "right_driveF");
         recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
+        linearSlide = new LinearSlide(hardwareMap, telemetry);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -199,7 +201,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
 
         //BASE DRIVE PATH:
-
+        linearSlide.setPosition(2);
         driveStraight(DRIVE_SPEED, 3.75, 0.0);
         turnToHeading( TURN_SPEED, 45.0);
         driveStraight(DRIVE_SPEED, 6.0, 45.0);
@@ -220,7 +222,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         turnToHeading(TURN_SPEED, -90.0);
         driveStraight(DRIVE_SPEED, 47.0, -90);
 
-        //BASE DRIVE PATH
+        //DRIVE TO PARKING SPACE
 
         if (recognizer.recognitonLabel.equals("1 Bolt")) {
             //Drive to parking 1
