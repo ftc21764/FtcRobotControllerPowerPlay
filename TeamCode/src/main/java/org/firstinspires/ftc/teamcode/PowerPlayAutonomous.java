@@ -90,7 +90,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Power Play Autonomous 21764", group="Robot")
-//@Disabled
+@Disabled
 public class PowerPlayAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -142,6 +142,11 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
+
+    //stuff that makes the left and right side autonomous (hopefully) work! :D
+    // If your robot starts on the right side in the driver's view, (A2 or F5), set to 1
+    // If your robot starts on the left side in the driver's view, (A5 or F2), set to -1
+    protected int     reverseTurnsForLeftSide            = 1;
 
     protected void setupRobot(BNO055IMU.AngleUnit imuUnits) {
         // Initialize the drive system variables.
@@ -203,7 +208,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         //BASE DRIVE PATH:
         linearSlide.setPosition(2);
         driveStraight(DRIVE_SPEED, 3.75, 0.0);
-        turnToHeading( TURN_SPEED, 45.0);
+        turnToHeading(TURN_SPEED, 45.0);
         driveStraight(DRIVE_SPEED, 6.0, 45.0);
         //DROP CONE LOW JUNCTION4
         driveStraight(DRIVE_SPEED, -6.0, 45.0);
@@ -340,6 +345,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
      *              If a relative angle is required, add/subtract from current heading.
      */
     public void turnToHeading(double maxTurnSpeed, double heading) {
+
+        //reverse the heading if you start on the left side. this turns a right turn into a left turn and vice versa.
+        heading = heading * reverseTurnsForLeftSide;
 
         // Run getSteeringCorrection() once to pre-calculate the current error
         getSteeringCorrection(heading, P_DRIVE_GAIN);
