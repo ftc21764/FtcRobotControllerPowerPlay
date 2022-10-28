@@ -229,12 +229,24 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         //DRIVE TO PARKING SPACE
 
-        if (recognizer.recognitonLabel.equals("1 Bolt")) {
+        if (recognizer.recognitonLabel.startsWith("1")) {
             //Drive to parking 1
-        } else if (recognizer.recognitonLabel.equals("2 Bulb")) {
+            if (reverseTurnsForLeftSide == 1) {
+                driveStraight(DRIVE_SPEED, -47.0, -90.0);
+            } else {
+                //stay in current place
+            }
+        } else if (recognizer.recognitonLabel.startsWith("2")) {
             //Drive to parking 2
+            driveStraight(DRIVE_SPEED, -23.5, -90.0);
+
         } else {
             //Drive to parking 3
+            if (reverseTurnsForLeftSide == 1) {
+                //stay in current place
+            } else {
+                driveStraight(DRIVE_SPEED, -47.0, -90.0);
+            }
         }
 
         //holdHeading( TURN_SPEED, -45.0, 0.5);   // Hold -45 Deg heading for a 1/2 second
@@ -251,7 +263,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);  // Pause to display last telemetry message.
+        sleep(1000);
+        // Pause to display last telemetry message.
     }
 
     /*
@@ -281,6 +294,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
+
+            //reverse the heading if you start on the left side. this turns a right heading into a left heading and vice versa.
+            heading = heading * reverseTurnsForLeftSide;
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
