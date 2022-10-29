@@ -90,7 +90,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Power Play Autonomous 21764", group="Robot")
-//@Disabled
+@Disabled
 public class PowerPlayAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -99,6 +99,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected DcMotor         rightDriveF  = null;
     protected DcMotor         rightDriveB  = null;
     protected BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
+    protected SignalSleeveRecognizer    recognizer = null;
+    protected LinearSlide         linearSlide = null;
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -122,15 +124,15 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;   // eg: GoBILDA 312 RPM Yellow Jacket
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_MOTOR_REV    = 28.0 ;   // eg: GoBILDA 312 RPM Yellow Jacket
+    static final double     DRIVE_GEAR_REDUCTION    = 12.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 3.75 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
+    static final double     DRIVE_SPEED             = 0.25;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
@@ -141,12 +143,19 @@ public class PowerPlayAutonomous extends LinearOpMode {
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
 
+    //stuff that makes the left and right side autonomous (hopefully) work! :D
+    // If your robot starts on the right side in the driver's view, (A2 or F5), set to 1
+    // If your robot starts on the left side in the driver's view, (A5 or F2), set to -1
+    protected int     reverseTurnsForLeftSide            = 1;
+
     protected void setupRobot(BNO055IMU.AngleUnit imuUnits) {
         // Initialize the drive system variables.
         leftDriveB  = hardwareMap.get(DcMotor.class, "left_driveB");
         leftDriveF  = hardwareMap.get(DcMotor.class, "left_driveF");
         rightDriveB = hardwareMap.get(DcMotor.class, "right_driveB");
         rightDriveF = hardwareMap.get(DcMotor.class, "right_driveF");
+        recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
+        linearSlide = new LinearSlide(hardwareMap, telemetry);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -180,6 +189,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addData(">", "Robot Heading = %4.0f", getRawHeading());
             telemetry.update();
+            recognizer.scan();
         }
 
         // Set the encoders for closed loop speed control, and reset the heading.
@@ -194,8 +204,51 @@ public class PowerPlayAutonomous extends LinearOpMode {
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
-        //driveStraight(DRIVE_SPEED, 24.0, 0.0);    // Drive Forward 24"
-        //turnToHeading( TURN_SPEED, -45.0);               // Turn  CW to -45 Degrees
+
+        //BASE DRIVE PATH:
+        linearSlide.setPosition(2);
+        driveStraight(DRIVE_SPEED, 3.75, 0.0);
+        turnToHeading(TURN_SPEED, 45.0);
+        driveStraight(DRIVE_SPEED, 6.0, 45.0);
+        //DROP CONE LOW JUNCTION4
+        driveStraight(DRIVE_SPEED, -6.0, 45.0);
+        turnToHeading(TURN_SPEED, -90.0);
+        driveStraight(DRIVE_SPEED, 24.5, -90.0);
+        turnToHeading(TURN_SPEED, 0.0);
+        driveStraight(DRIVE_SPEED, 49.5, 0.0);
+        turnToHeading(TURN_SPEED, -90);
+        //CYCLE!!!
+        //Pickup Cone
+        driveStraight(DRIVE_SPEED, -47.0, -90.0);
+        turnToHeading(TURN_SPEED, -135.0);
+        driveStraight(DRIVE_SPEED, 6.0, -135.0);
+        //Drop-off Cone
+        driveStraight(DRIVE_SPEED, -6.0, -135.0);
+        turnToHeading(TURN_SPEED, -90.0);
+        driveStraight(DRIVE_SPEED, 47.0, -90);
+
+        //DRIVE TO PARKING SPACE
+
+        if (recognizer.recognitonLabel.startsWith("1")) {
+            //Drive to parking 1
+            if (reverseTurnsForLeftSide == 1) {
+                driveStraight(DRIVE_SPEED, -47.0, -90.0);
+            } else {
+                //stay in current place
+            }
+        } else if (recognizer.recognitonLabel.startsWith("2")) {
+            //Drive to parking 2
+            driveStraight(DRIVE_SPEED, -23.5, -90.0);
+
+        } else {
+            //Drive to parking 3
+            if (reverseTurnsForLeftSide == 1) {
+                //stay in current place
+            } else {
+                driveStraight(DRIVE_SPEED, -47.0, -90.0);
+            }
+        }
+
         //holdHeading( TURN_SPEED, -45.0, 0.5);   // Hold -45 Deg heading for a 1/2 second
 
         //driveStraight(DRIVE_SPEED, 17.0, -45.0);  // Drive Forward 17" at -45 degrees (12"x and 12"y)
@@ -210,7 +263,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);  // Pause to display last telemetry message.
+        sleep(1000);
+        // Pause to display last telemetry message.
     }
 
     /*
@@ -240,6 +294,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
+
+            //reverse the heading if you start on the left side. this turns a right heading into a left heading and vice versa.
+            heading = heading * reverseTurnsForLeftSide;
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
@@ -304,6 +361,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
      *              If a relative angle is required, add/subtract from current heading.
      */
     public void turnToHeading(double maxTurnSpeed, double heading) {
+
+        //reverse the heading if you start on the left side. this turns a right turn into a left turn and vice versa.
+        heading = heading * reverseTurnsForLeftSide;
 
         // Run getSteeringCorrection() once to pre-calculate the current error
         getSteeringCorrection(heading, P_DRIVE_GAIN);

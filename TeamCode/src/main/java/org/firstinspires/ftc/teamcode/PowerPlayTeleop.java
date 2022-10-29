@@ -53,6 +53,8 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             rightDriveF.setPower(frontRightPower);
             rightDriveB.setPower(backRightPower);
 
+            linearSlide.readGamepad(gamepad2);
+
             telemetry.addData("Motor Powers FL:FR:BL:BR", "%7f:%7f:%7f:%7f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.addData("Gamepad 1: y:x:rx", "%7f:%7f:%7f",
