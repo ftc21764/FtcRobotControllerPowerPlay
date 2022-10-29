@@ -188,8 +188,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
             telemetry.addData(">", "Robot Heading = %4.0f", getRawHeading());
-            telemetry.update();
             recognizer.scan();
+            telemetry.update();
         }
 
         // Set the encoders for closed loop speed control, and reset the heading.
@@ -227,16 +227,19 @@ public class PowerPlayAutonomous extends LinearOpMode {
         turnToHeading(TURN_SPEED, -90.0);
         driveStraight(DRIVE_SPEED, 47.0, -90);
 
-        //DRIVE TO PARKING SPACE
 
-        if (recognizer.recognitonLabel.startsWith("1")) {
+        //check whether recognition label is null, if not, drive to parking space
+
+        if (recognizer.recognitionLabel == null) {
+            //stay in current place
+        } else if (recognizer.recognitionLabel.startsWith("1")) {
             //Drive to parking 1
             if (reverseTurnsForLeftSide == 1) {
                 driveStraight(DRIVE_SPEED, -47.0, -90.0);
             } else {
                 //stay in current place
             }
-        } else if (recognizer.recognitonLabel.startsWith("2")) {
+        } else if (recognizer.recognitionLabel.startsWith("2")) {
             //Drive to parking 2
             driveStraight(DRIVE_SPEED, -23.5, -90.0);
 

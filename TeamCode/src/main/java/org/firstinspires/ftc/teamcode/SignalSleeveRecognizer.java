@@ -59,7 +59,7 @@ public class SignalSleeveRecognizer {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private Recognition bestRecognition = null;
-    public String recognitonLabel = null;
+    public String recognitionLabel = null;
 
     public SignalSleeveRecognizer(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
@@ -112,10 +112,9 @@ public class SignalSleeveRecognizer {
 
                     if (bestRecognition == null || (recognition.getConfidence() > bestRecognition.getConfidence())) {
                         bestRecognition = recognition;
-                        recognitonLabel = bestRecognition.getLabel();
+                        recognitionLabel = bestRecognition.getLabel();
                     }
                 }
-                telemetry.update();
             }
         }
     }

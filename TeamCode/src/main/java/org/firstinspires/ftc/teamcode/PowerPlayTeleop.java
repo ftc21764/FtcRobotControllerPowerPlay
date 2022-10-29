@@ -55,6 +55,19 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
 
             linearSlide.readGamepad(gamepad2);
 
+            //sense if a colorful button is pressed, if it is then turn to a place and if not do nothing :)
+            if (gamepad1.a) {
+                turnToHeading(TURN_SPEED, 180);
+            } else if (gamepad1.b) {
+                turnToHeading(TURN_SPEED, -90);
+            } else if (gamepad1.x) {
+                turnToHeading(TURN_SPEED, 90);
+            } else if (gamepad1.y) {
+                turnToHeading(TURN_SPEED, 0);
+            }
+
+
+
             telemetry.addData("Motor Powers FL:FR:BL:BR", "%7f:%7f:%7f:%7f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.addData("Gamepad 1: y:x:rx", "%7f:%7f:%7f",
