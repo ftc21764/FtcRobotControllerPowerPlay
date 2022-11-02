@@ -182,6 +182,14 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * Checks on linear slide, four bar, and intake inside driving loops so that they can update themselves
+     */
+
+    protected void mechanismLoop() {
+        linearSlide.loop();
+    }
+
     @Override
     public void runOpMode() {
         setupRobot(BNO055IMU.AngleUnit.DEGREES);
@@ -210,7 +218,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
         driveStraight(DRIVE_SPEED, 3.75, 0.0);
         turnToHeading(TURN_SPEED, 45.0);
         driveStraight(DRIVE_SPEED, 6.0, 45.0);
-        //DROP CONE LOW JUNCTION4
+        //DROP CONE ON LOW JUNCTION
+        linearSlide.setPosition(1);
         driveStraight(DRIVE_SPEED, -6.0, 45.0);
         turnToHeading(TURN_SPEED, -90.0);
         driveStraight(DRIVE_SPEED, 24.5, -90.0);
@@ -341,6 +350,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
                 // Display drive status for the driver.
                 sendTelemetry(true);
+
+                mechanismLoop();
             }
 
             // Stop all motion & Turn off RUN_TO_POSITION
@@ -385,6 +396,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
             // Display drive status for the driver.
             sendTelemetry(false);
+
+            mechanismLoop();
         }
 
         // Stop all motion;
@@ -420,6 +433,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
             // Display drive status for the driver.
             sendTelemetry(false);
+
+            mechanismLoop();
         }
 
         // Stop all motion;
@@ -519,3 +534,5 @@ public class PowerPlayAutonomous extends LinearOpMode {
         robotHeading = 0;
     }
 }
+
+

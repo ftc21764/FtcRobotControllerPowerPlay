@@ -66,12 +66,13 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
                 turnToHeading(TURN_SPEED, 0);
             }
 
-
-
             telemetry.addData("Motor Powers FL:FR:BL:BR", "%7f:%7f:%7f:%7f",
                     frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.addData("Gamepad 1: y:x:rx", "%7f:%7f:%7f",
                     y, x, rx);
+
+            mechanismLoop();
+
             telemetry.update();
         }
     }
