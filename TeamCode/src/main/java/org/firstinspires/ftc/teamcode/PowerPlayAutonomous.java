@@ -102,6 +102,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected SignalSleeveRecognizer    recognizer = null;
     protected LinearSlide         linearSlide = null;
     protected Intake        intake = null;
+    protected SwingArm      swingArm = null;
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -158,6 +159,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
         linearSlide = new LinearSlide(hardwareMap, telemetry, gamepad2);
         intake = new Intake(hardwareMap, telemetry, gamepad2);
+        swingArm = new SwingArm(hardwareMap, telemetry, gamepad2);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -191,6 +193,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected void mechanismLoop() {
         linearSlide.loop();
         intake.loop();
+        swingArm.loop();
     }
 
     @Override
@@ -219,6 +222,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         //BASE DRIVE PATH:
         // begin setup to drop on low junction
         linearSlide.setPosition(2);
+        swingArm.setPosition(1);
         // drive to low junction
         driveStraight(DRIVE_SPEED, 3.75, 0.0);
         turnToHeading(TURN_SPEED, 45.0);
@@ -250,6 +254,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         holdHeading(TURN_SPEED, -90, 3);
         // begin setup to drop on medium junction
         linearSlide.setPosition(2);
+        swingArm.setPosition(2);
         // drive to medium junction
         driveStraight(DRIVE_SPEED, -53.0, -90.0);
         turnToHeading(TURN_SPEED, -135.0);
@@ -258,6 +263,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
         intake.dropCone();
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
         holdHeading(TURN_SPEED, -135, 2);
+        // move linear slide and swing arm back in so that we look cool ;D
+        linearSlide.setPosition(1);
+        swingArm.setPosition(1);
         // drive back to cone stack
         driveStraight(DRIVE_SPEED, -6.0, -135.0);
         turnToHeading(TURN_SPEED, -90.0);
@@ -287,18 +295,6 @@ public class PowerPlayAutonomous extends LinearOpMode {
                 driveStraight(DRIVE_SPEED, -47.0, -90.0);
             }
         }
-
-        //holdHeading( TURN_SPEED, -45.0, 0.5);   // Hold -45 Deg heading for a 1/2 second
-
-        //driveStraight(DRIVE_SPEED, 17.0, -45.0);  // Drive Forward 17" at -45 degrees (12"x and 12"y)
-        //turnToHeading( TURN_SPEED,  45.0);               // Turn  CCW  to  45 Degrees
-        //holdHeading( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
-
-        //driveStraight(DRIVE_SPEED, 17.0, 45.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
-        //turnToHeading( TURN_SPEED,   0.0);               // Turn  CW  to 0 Degrees
-        //holdHeading( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for 1 second
-
-        //driveStraight(DRIVE_SPEED,-48.0, 0.0);    // Drive in Reverse 48" (should return to approx. staring position)
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

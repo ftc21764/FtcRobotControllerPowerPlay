@@ -81,12 +81,12 @@ public class LinearSlide {
         runtime.reset();
         linearSlideMotor.setPower(MAXIMUM_SPEED);
 
-        telemetry.addData("Linear slide starting to run to position", position);
+        telemetry.addData("Linear slide starting to run to position", targetPosition);
     }
 
 
     /**
-     * Senses whether a button is being pushed, and whether it was being pushed last time you checked.
+     * Senses whether a button is being pushed.
      * If a button is pushed, it will set the linear slide to a desired height. Push A for low,
      * B or X for medium, and Y for high.
      * Next, if the linear slide motor isn't busy with moving to a position, check if up or down
