@@ -101,6 +101,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected BNO055IMU       imu          = null;      // Control/Expansion Hub IMU
     protected SignalSleeveRecognizer    recognizer = null;
     protected LinearSlide         linearSlide = null;
+    protected Intake        intake = null;
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -155,7 +156,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveB = hardwareMap.get(DcMotor.class, "right_driveB");
         rightDriveF = hardwareMap.get(DcMotor.class, "right_driveF");
         recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
-        linearSlide = new LinearSlide(hardwareMap, telemetry);
+        linearSlide = new LinearSlide(hardwareMap, telemetry, gamepad2);
+        intake = new Intake(hardwareMap, telemetry, gamepad2);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -188,6 +190,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
     protected void mechanismLoop() {
         linearSlide.loop();
+        intake.loop();
     }
 
     @Override
@@ -214,24 +217,48 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
 
         //BASE DRIVE PATH:
+        // begin setup to drop on low junction
         linearSlide.setPosition(2);
+        // drive to low junction
         driveStraight(DRIVE_SPEED, 3.75, 0.0);
         turnToHeading(TURN_SPEED, 45.0);
         driveStraight(DRIVE_SPEED, 6.0, 45.0);
-        //DROP CONE ON LOW JUNCTION
+        // drop cone on low junction
+        intake.dropCone();
+        // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
+        holdHeading(TURN_SPEED, 45, 2);
+        // begin setup to pick up cone
         linearSlide.setPosition(1);
+        //drive to cone stack
         driveStraight(DRIVE_SPEED, -6.0, 45.0);
         turnToHeading(TURN_SPEED, -90.0);
         driveStraight(DRIVE_SPEED, 24.5, -90.0);
         turnToHeading(TURN_SPEED, 0.0);
         driveStraight(DRIVE_SPEED, 49.5, 0.0);
         turnToHeading(TURN_SPEED, -90);
-        //CYCLE!!!
-        //Pickup Cone
-        driveStraight(DRIVE_SPEED, -47.0, -90.0);
+        driveStraight(DRIVE_SPEED, 6, -90);
+        // at this point, the intake should be directly above the cones.
+        // descend on 5-stack of cones
+        linearSlide.setPosition(-5);
+        // pick up cone
+        // note!! since there is no break between moving the linear slide down and starting the
+        // intake, these things will happen at relatively the same time, meaning that the intake will
+        // be spinning as the linear slide descends. if this doesn't work, add a maintainHeading()
+        // in between the linear slide and intake commands.
+        intake.pickUpCone();
+        // sleeps for three seconds while the intake picks up a cone. if possible, decrease holdTime.
+        holdHeading(TURN_SPEED, -90, 3);
+        // begin setup to drop on medium junction
+        linearSlide.setPosition(2);
+        // drive to medium junction
+        driveStraight(DRIVE_SPEED, -53.0, -90.0);
         turnToHeading(TURN_SPEED, -135.0);
         driveStraight(DRIVE_SPEED, 6.0, -135.0);
-        //Drop-off Cone
+        // drop cone on medium junction
+        intake.dropCone();
+        // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
+        holdHeading(TURN_SPEED, -135, 2);
+        // drive back to cone stack
         driveStraight(DRIVE_SPEED, -6.0, -135.0);
         turnToHeading(TURN_SPEED, -90.0);
         driveStraight(DRIVE_SPEED, 47.0, -90);

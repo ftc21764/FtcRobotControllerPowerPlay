@@ -53,8 +53,6 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             rightDriveF.setPower(frontRightPower);
             rightDriveB.setPower(backRightPower);
 
-            linearSlide.readGamepad(gamepad2);
-
             //sense if a colorful button is pressed, if it is then turn to a place and if not do nothing :)
             if (gamepad1.a) {
                 turnToHeading(TURN_SPEED, 180);
