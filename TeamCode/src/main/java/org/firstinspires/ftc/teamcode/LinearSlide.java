@@ -26,24 +26,24 @@ public class LinearSlide {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
 
-    static final int LOW_TARGET_COUNT = 10;
-    static final int MIDDLE_TARGET_COUNT = 60;
-    static final int HIGH_TARGET_COUNT = 110;
+    static final int LOW_TARGET_COUNT = 100;
+    static final int MIDDLE_TARGET_COUNT = 600;
+    static final int HIGH_TARGET_COUNT = 1300; //110? NOT FUNCTIONAL UNTIL CHAIN
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.2;
-    static final double ADJUSTMENT_SPEED = 0.1;
+    static final double MAXIMUM_SPEED = 0.45;
+    static final double ADJUSTMENT_SPEED = 0.45;
 
 
     public LinearSlide(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.gamepad = gamepad;
-        linearSlideMotor  = hardwareMap.get(DcMotor.class, "CHANGETHIS");
+        linearSlideMotor  = hardwareMap.get(DcMotor.class, "linear_slide"); //Define hardware (Motor)
         //use the below line if the motor runs the wrong way!!
-        // linearSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearSlideMotor.setDirection(DcMotor.Direction.REVERSE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

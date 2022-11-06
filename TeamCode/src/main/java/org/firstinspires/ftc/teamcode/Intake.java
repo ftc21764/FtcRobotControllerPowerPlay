@@ -17,15 +17,15 @@ public class Intake {
     private final Gamepad gamepad;
     private ElapsedTime runtime = new ElapsedTime();
     static final int AUTO_RUN_SECONDS = 2;
-    static final double MAX_SPEED = 0.3;
+    static final double MAX_SPEED = 0.5;
     private boolean isRunning = false;
 
     public Intake(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.gamepad = gamepad;
-        intakeMotor  = hardwareMap.get(DcMotor.class, "CHANGETHIS");
-        // intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor  = hardwareMap.get(DcMotor.class, "intake"); //Define hardware
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Right Side Autonomous PowerPlay 21764", group="Robot")
+@Autonomous(name="USE ME - Autonomous PowerPlay 21764", group="Robot")
 //@Disabled
 
 /**

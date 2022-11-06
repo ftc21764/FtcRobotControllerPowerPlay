@@ -14,6 +14,7 @@ public class SwingArm {
     private final Telemetry telemetry;
     private final Gamepad gamepad;
     private ElapsedTime runtime = new ElapsedTime();
+    private int targetPositionCount;
 
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
@@ -25,20 +26,20 @@ public class SwingArm {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
 
-    static final int LOW_TARGET_COUNT = 10;
-    static final int HIGH_TARGET_COUNT = 110;
+    static final int PICKUP_POINT_COUNT = 5;
+    static final int HIGH_POINT_COUNT = 110; //110? Adjust to same distance from robot as low
     static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.2;
-    static final double ADJUSTMENT_SPEED = 0.1;
+    static final double MAXIMUM_SPEED = 0.99;
+    static final double ADJUSTMENT_SPEED = 0.99;
 
 
     public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.gamepad = gamepad;
-        swingArmMotor  = hardwareMap.get(DcMotor.class, "CHANGETHIS");
+        swingArmMotor  = hardwareMap.get(DcMotor.class, "four_bar");
         //use the below line if the motor runs the wrong way!!
-        // linearSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        swingArmMotor.setDirection(DcMotor.Direction.REVERSE);
         swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -56,24 +57,22 @@ public class SwingArm {
      * and high (2)
      */
     public void setPosition(int position) {
-        int targetPosition;
-        if (swingArmMotor.isBusy()) {
-            return;
-        } else if (position == 1) {
-            targetPosition = LOW_TARGET_COUNT;
+        if (position == 1) {
+            targetPositionCount = PICKUP_POINT_COUNT;
+
         } else if (position == 2) {
-            targetPosition = HIGH_TARGET_COUNT;
+            targetPositionCount = HIGH_POINT_COUNT;
         } else {
             return;
         }
-        swingArmMotor.setTargetPosition(targetPosition);
+        swingArmMotor.setTargetPosition(targetPositionCount);
 
         swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         runtime.reset();
         swingArmMotor.setPower(MAXIMUM_SPEED);
 
-        telemetry.addData("Swing arm starting to run to position", targetPosition);
+        telemetry.addData("Swing arm starting to run to position", targetPositionCount);
     }
 
 
@@ -93,41 +92,22 @@ public class SwingArm {
             setPosition(2);
         }
 
-        if (!swingArmMotor.isBusy()) {
-            if (gamepad.dpad_right) {
-                if (swingArmMotor.getCurrentPosition() <= HIGH_TARGET_COUNT) {
-                    swingArmMotor.setPower(ADJUSTMENT_SPEED);
-                } else {
-                    swingArmMotor.setPower(0);
-                }
-            } else if (gamepad.dpad_left) {
-                if (swingArmMotor.getCurrentPosition() >= 5) {
-                    swingArmMotor.setPower(-ADJUSTMENT_SPEED);
-                } else {
-                    swingArmMotor.setPower(0);
-                }
-            } else {
-                swingArmMotor.setPower(0);
+        if (gamepad.dpad_right) {
+            if (swingArmMotor.getCurrentPosition() <= HIGH_POINT_COUNT) {
+                targetPositionCount++;
+                swingArmMotor.setTargetPosition(targetPositionCount);
+            }
+        } else if (gamepad.dpad_left) {
+            if (swingArmMotor.getCurrentPosition() <= HIGH_POINT_COUNT) {
+                targetPositionCount--;
+                swingArmMotor.setTargetPosition(targetPositionCount);
             }
         }
     }
 
 
     public void loop() {
-        if (swingArmMotor.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
-            if (!swingArmMotor.isBusy() || (runtime.seconds() > TIMEOUT_SECONDS)) {
-                //checks if a) the motor is done moving to a position, or b) it's been on for way too long
-                swingArmMotor.setPower(0);
-                swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                telemetry.addData("Swing Arm Position is:", swingArmMotor.getCurrentPosition());
-            } else {
-                //if the motor is still moving, update the telemetry to show its position and target!
-                telemetry.addData("Swing Arm is moving", "%7d of %7d",
-                        swingArmMotor.getCurrentPosition(), swingArmMotor.getTargetPosition());
-            }
-        } else {
-            telemetry.addData("Swing Arm Position is:", swingArmMotor.getCurrentPosition());
-            readGamepad(gamepad);
-        }
+        telemetry.addData("Swing Arm Position is:", swingArmMotor.getCurrentPosition());
+        readGamepad(gamepad);
     }
 }

@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -127,8 +128,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double     COUNTS_PER_MOTOR_REV    = 28.0 ;   // eg: GoBILDA 312 RPM Yellow Jacket
-    static final double     DRIVE_GEAR_REDUCTION    = 12.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 3.75 ;     // For figuring circumference
+    static final double     DRIVE_GEAR_REDUCTION    = 18.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 3.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -167,7 +168,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         leftDriveB.setDirection(DcMotor.Direction.FORWARD);
         leftDriveF.setDirection(DcMotor.Direction.FORWARD);
         rightDriveB.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveF.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveF.setDirection(DcMotor.Direction.FORWARD);
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -217,22 +218,22 @@ public class PowerPlayAutonomous extends LinearOpMode {
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
-
+/************  nope
 
         //BASE DRIVE PATH:
         // begin setup to drop on low junction
-        linearSlide.setPosition(2);
-        swingArm.setPosition(1);
+//        linearSlide.setPosition(2);
+//        swingArm.setPosition(1);
         // drive to low junction
-        driveStraight(DRIVE_SPEED, 3.75, 0.0);
+        driveStraight(DRIVE_SPEED, 3.0, 0.0);
         turnToHeading(TURN_SPEED, 45.0);
         driveStraight(DRIVE_SPEED, 6.0, 45.0);
         // drop cone on low junction
-        intake.dropCone();
+//        intake.dropCone();
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
         holdHeading(TURN_SPEED, 45, 2);
         // begin setup to pick up cone
-        linearSlide.setPosition(1);
+        // linearSlide.setPosition(1);
         //drive to cone stack
         driveStraight(DRIVE_SPEED, -6.0, 45.0);
         turnToHeading(TURN_SPEED, -90.0);
@@ -243,29 +244,29 @@ public class PowerPlayAutonomous extends LinearOpMode {
         driveStraight(DRIVE_SPEED, 6, -90);
         // at this point, the intake should be directly above the cones.
         // descend on 5-stack of cones
-        linearSlide.setPosition(-5);
+//        linearSlide.setPosition(-5);
         // pick up cone
         // note!! since there is no break between moving the linear slide down and starting the
         // intake, these things will happen at relatively the same time, meaning that the intake will
         // be spinning as the linear slide descends. if this doesn't work, add a maintainHeading()
         // in between the linear slide and intake commands.
-        intake.pickUpCone();
+//        intake.pickUpCone();
         // sleeps for three seconds while the intake picks up a cone. if possible, decrease holdTime.
-        holdHeading(TURN_SPEED, -90, 3);
+//        holdHeading(TURN_SPEED, -90, 3);
         // begin setup to drop on medium junction
-        linearSlide.setPosition(2);
-        swingArm.setPosition(2);
+//        linearSlide.setPosition(2);
+//        swingArm.setPosition(2);
         // drive to medium junction
-        driveStraight(DRIVE_SPEED, -53.0, -90.0);
-        turnToHeading(TURN_SPEED, -135.0);
-        driveStraight(DRIVE_SPEED, 6.0, -135.0);
+//        driveStraight(DRIVE_SPEED, -53.0, -90.0);
+//        turnToHeading(TURN_SPEED, -135.0);
+//        driveStraight(DRIVE_SPEED, 6.0, -135.0);
         // drop cone on medium junction
-        intake.dropCone();
+//        intake.dropCone();
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
-        holdHeading(TURN_SPEED, -135, 2);
+        // holdHeading(TURN_SPEED, -135, 2);
         // move linear slide and swing arm back in so that we look cool ;D
-        linearSlide.setPosition(1);
-        swingArm.setPosition(1);
+//        linearSlide.setPosition(1);
+//        swingArm.setPosition(1);
         // drive back to cone stack
         driveStraight(DRIVE_SPEED, -6.0, -135.0);
         turnToHeading(TURN_SPEED, -90.0);
@@ -295,6 +296,21 @@ public class PowerPlayAutonomous extends LinearOpMode {
                 driveStraight(DRIVE_SPEED, -47.0, -90.0);
             }
         }
+*******************/
+        driveStraight(DRIVE_SPEED, 52.0, 0.0);
+
+
+        if (recognizer.recognitionLabel == null) {
+        } else if (recognizer.recognitionLabel.startsWith("1")) {
+            turnToHeading(TURN_SPEED, 90.0);
+            driveStraight(DRIVE_SPEED, 24.0, 90.0);
+        } else if (recognizer.recognitionLabel.startsWith("2")) {
+        } else {
+            //Drive to parking 3
+            turnToHeading(TURN_SPEED, -90.0);
+            driveStraight(DRIVE_SPEED, 24, -90.0);
+        }
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

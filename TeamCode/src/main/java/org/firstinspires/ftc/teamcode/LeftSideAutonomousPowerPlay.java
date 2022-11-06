@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Left Side Autonomous PowerPlay 21764", group="Robot")
+//@Autonomous(name="----", group="Robot")
 //@Disabled
 
 /**
