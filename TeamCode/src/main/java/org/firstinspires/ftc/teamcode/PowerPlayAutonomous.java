@@ -297,7 +297,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
             }
         }
 *******************/
-        driveStraight(DRIVE_SPEED, 52.0, 0.0);
+        driveStraight(DRIVE_SPEED, 28.0, 0.0);
 
 
         if (recognizer.recognitionLabel == null) {
@@ -310,6 +310,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
             turnToHeading(TURN_SPEED, -90.0);
             driveStraight(DRIVE_SPEED, 24, -90.0);
         }
+        turnToHeading(TURN_SPEED, 0.0);
 
 
         telemetry.addData("Path", "Complete");

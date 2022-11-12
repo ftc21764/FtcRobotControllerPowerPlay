@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SwingArm {
 
     protected DcMotor swingArmMotor;
+    protected DcMotor swingArmMotor2;
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Gamepad gamepad;
@@ -28,9 +29,10 @@ public class SwingArm {
 
     static final int PICKUP_POINT_COUNT = 5;
     static final int HIGH_POINT_COUNT = 110; //110? Adjust to same distance from robot as low
-    static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.99;
-    static final double ADJUSTMENT_SPEED = 0.99;
+    //static final int TIMEOUT_SECONDS = 10;
+    static final double MAXIMUM_SPEED = 0.8;
+    //static final double ADJUSTMENT_SPEED = 0.7;
+    static final double MOTOR_SCALE_DIFFERENCE = 103.0/122.0;
 
 
     public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
@@ -45,8 +47,18 @@ public class SwingArm {
 
         swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        telemetry.addData("Swing Arm Starting At",  "%7d",
+        swingArmMotor2  = hardwareMap.get(DcMotor.class, "four_bar_two");
+        //use the below line if the motor runs the wrong way!!
+        swingArmMotor2.setDirection(DcMotor.Direction.REVERSE);
+        swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        swingArmMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        swingArmMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("Swing Arm Motor 1 Starting At",  "%7d",
                 swingArmMotor.getCurrentPosition());
+        telemetry.addData("Swing Arm Motor 2 Starting At",  "%7d",
+                swingArmMotor2.getCurrentPosition());
 
     }
 
@@ -66,13 +78,15 @@ public class SwingArm {
             return;
         }
         swingArmMotor.setTargetPosition(targetPositionCount);
+        swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
 
         swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        swingArmMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         runtime.reset();
         swingArmMotor.setPower(MAXIMUM_SPEED);
+        swingArmMotor2.setPower(MAXIMUM_SPEED);
 
-        telemetry.addData("Swing arm starting to run to position", targetPositionCount);
     }
 
 
@@ -93,21 +107,25 @@ public class SwingArm {
         }
 
         if (gamepad.dpad_right) {
-            if (swingArmMotor.getCurrentPosition() <= HIGH_POINT_COUNT) {
+            if (swingArmMotor.getCurrentPosition() < HIGH_POINT_COUNT) {
                 targetPositionCount++;
                 swingArmMotor.setTargetPosition(targetPositionCount);
+                swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
             }
         } else if (gamepad.dpad_left) {
-            if (swingArmMotor.getCurrentPosition() <= HIGH_POINT_COUNT) {
+            if (swingArmMotor.getCurrentPosition() > PICKUP_POINT_COUNT) {
                 targetPositionCount--;
                 swingArmMotor.setTargetPosition(targetPositionCount);
+                swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
             }
         }
     }
 
 
     public void loop() {
-        telemetry.addData("Swing Arm Position is:", swingArmMotor.getCurrentPosition());
+        telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
+        telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
+        telemetry.addData("Swing arm starting to run to position", targetPositionCount);
     }
 }

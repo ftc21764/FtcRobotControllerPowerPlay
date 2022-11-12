@@ -32,7 +32,7 @@ public class LinearSlide {
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;
     static final double MAXIMUM_SPEED = 0.45;
-    static final double ADJUSTMENT_SPEED = 0.45;
+    static final double ADJUSTMENT_SPEED = 0.95;
 
 
     public LinearSlide(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
@@ -105,17 +105,17 @@ public class LinearSlide {
 
         if (!linearSlideMotor.isBusy()) {
             if (gamepad.dpad_up) {
-                if (linearSlideMotor.getCurrentPosition() <= HIGH_TARGET_COUNT) {
+//                if (linearSlideMotor.getCurrentPosition() <= HIGH_TARGET_COUNT) {
                     linearSlideMotor.setPower(ADJUSTMENT_SPEED);
-                } else {
-                    linearSlideMotor.setPower(0);
-                }
+//                } else {
+//                    linearSlideMotor.setPower(0);
+//                }
             } else if (gamepad.dpad_down) {
-                if (linearSlideMotor.getCurrentPosition() >= 5) {
+//                if (linearSlideMotor.getCurrentPosition() >= 5) {
                     linearSlideMotor.setPower(-ADJUSTMENT_SPEED);
-                } else {
-                    linearSlideMotor.setPower(0);
-                }
+//                } else {
+//                    linearSlideMotor.setPower(0);
+//                }
             } else {
                 linearSlideMotor.setPower(0);
             }
