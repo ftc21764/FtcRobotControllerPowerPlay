@@ -105,13 +105,13 @@ public class LinearSlide {
 
         if (!linearSlideMotor.isBusy()) {
             if (gamepad.dpad_up) {
-//                if (linearSlideMotor.getCurrentPosition() <= HIGH_TARGET_COUNT) {
+//                if (linearSlideMotor.getCurrentPosition() < HIGH_TARGET_COUNT) {
                     linearSlideMotor.setPower(ADJUSTMENT_SPEED);
 //                } else {
 //                    linearSlideMotor.setPower(0);
 //                }
             } else if (gamepad.dpad_down) {
-//                if (linearSlideMotor.getCurrentPosition() >= 5) {
+//                if (linearSlideMotor.getCurrentPosition() > 5) {
                     linearSlideMotor.setPower(-ADJUSTMENT_SPEED);
 //                } else {
 //                    linearSlideMotor.setPower(0);
