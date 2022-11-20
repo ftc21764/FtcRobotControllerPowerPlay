@@ -32,7 +32,7 @@ public class SwingArm {
     //static final int TIMEOUT_SECONDS = 10;
     static final double MAXIMUM_SPEED = 0.8;
     //static final double ADJUSTMENT_SPEED = 0.7;
-    static final double MOTOR_SCALE_DIFFERENCE = 103.0/122.0;
+    static final double MOTOR_SCALE_DIFFERENCE = 1667.0/2000.0;
 
 
     public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
@@ -127,5 +127,20 @@ public class SwingArm {
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
         telemetry.addData("Swing arm starting to run to position", targetPositionCount);
+    }
+
+    public void initLoop() {
+        telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
+        telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
+    }
+
+    public void setBrakeMode(boolean b) {
+        if (b) {
+            swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
     }
 }
