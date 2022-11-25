@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -18,7 +19,9 @@ public class Intake {
     private ElapsedTime runtime = new ElapsedTime();
     static final int AUTO_RUN_SECONDS = 2;
     static final double MAX_SPEED = 0.5;
-    private boolean isRunning = false;
+    Gamepad currentGamepad = new Gamepad();
+    Gamepad previousGamepad = new Gamepad();
+
 
     public Intake(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
         this.hardwareMap = hardwareMap;
@@ -34,7 +37,6 @@ public class Intake {
 
     private void runIntake(double speed) {
         speed = Range.clip(speed, -1, 1);
-        isRunning = true;
         runtime.reset();
         intakeMotor.setPower(speed);
     }
@@ -48,11 +50,10 @@ public class Intake {
     }
 
     public void loop() {
-        if (isRunning) {
+        if (intakeMotor.isBusy()) {
             if (runtime.seconds() > AUTO_RUN_SECONDS) {
                 //checks if a) the motor is done moving to a position, or b) it's been on for way too long
                 intakeMotor.setPower(0);
-                isRunning = false;
             }
         } else {
             readGamepad(gamepad);
@@ -61,7 +62,14 @@ public class Intake {
     }
 
     private void readGamepad(Gamepad gamepad) {
-        if (!isRunning) {
+        try {
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad);
+        } catch (RobotCoreException e) {
+            // Ignore this exception - it shouldn't happen
+        }
+
+        if (!intakeMotor.isBusy()) {
             if (gamepad.right_trigger > 0) {
                 intakeMotor.setPower(MAX_SPEED);
             } else if (gamepad.left_trigger > 0) {
@@ -70,5 +78,23 @@ public class Intake {
                 intakeMotor.setPower(0);
             }
         }
+
+        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+            //hi
+            if (intakeMotor.isBusy()) {
+                intakeMotor.setPower(0);
+            } else {
+                intakeMotor.setPower(MAX_SPEED);
+            }
+        }
+
+        if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+            if (intakeMotor.isBusy()) {
+                intakeMotor.setPower(0);
+            } else {
+                intakeMotor.setPower(-MAX_SPEED);
+            }
+        }
     }
+
 }

@@ -159,7 +159,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveF = hardwareMap.get(DcMotor.class, "right_driveF");
         recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
         linearSlide = new LinearSlide(hardwareMap, telemetry, gamepad2);
-        intake = new Intake(hardwareMap, telemetry, gamepad2);
+        intake = new Intake(hardwareMap, telemetry, gamepad1);
         swingArm = new SwingArm(hardwareMap, telemetry, gamepad2);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.

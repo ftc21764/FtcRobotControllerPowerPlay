@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -31,8 +32,9 @@ public class SwingArm {
     static final int HIGH_POINT_COUNT = 110; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
     static final double MAXIMUM_SPEED = 0.8;
-    //static final double ADJUSTMENT_SPEED = 0.7;
-    static final double MOTOR_SCALE_DIFFERENCE = 1667.0/2000.0;
+    static final int ADJUSTMENT_COUNT = 30;
+    static final double MOTOR_SCALE_DIFFERENCE = 1;
+    boolean currentlyRunningToJunction = false;
 
 
     public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
@@ -102,22 +104,21 @@ public class SwingArm {
     private void readGamepad(Gamepad gamepad) {
         if (gamepad.a || gamepad.x) {
             setPosition(1);
+            currentlyRunningToJunction = true;
         } else if (gamepad.b || gamepad.y) {
             setPosition(2);
+            currentlyRunningToJunction = true;
         }
 
-        if (gamepad.dpad_right) {
+
+        if (gamepad.right_stick_y != 0) {
             if (swingArmMotor.getCurrentPosition() < HIGH_POINT_COUNT) {
-                targetPositionCount++;
+                targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
                 swingArmMotor.setTargetPosition(targetPositionCount);
                 swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
             }
-        } else if (gamepad.dpad_left) {
-            if (swingArmMotor.getCurrentPosition() > PICKUP_POINT_COUNT) {
-                targetPositionCount--;
-                swingArmMotor.setTargetPosition(targetPositionCount);
-                swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
-            }
+        } else if (!currentlyRunningToJunction){
+            targetPositionCount = swingArmMotor.getCurrentPosition();
         }
     }
 
@@ -126,7 +127,13 @@ public class SwingArm {
         telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
-        telemetry.addData("Swing arm starting to run to position", targetPositionCount);
+        telemetry.addData("Swing arm target position", targetPositionCount);
+
+        if (currentlyRunningToJunction) {
+            if (!(swingArmMotor.isBusy() || swingArmMotor2.isBusy())) {
+                currentlyRunningToJunction = false;
+            }
+        }
     }
 
     public void initLoop() {
