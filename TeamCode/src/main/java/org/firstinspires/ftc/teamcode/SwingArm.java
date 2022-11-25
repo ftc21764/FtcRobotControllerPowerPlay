@@ -33,7 +33,7 @@ public class SwingArm {
     //static final int TIMEOUT_SECONDS = 10;
     static final double MAXIMUM_SPEED = 0.8;
     static final int ADJUSTMENT_COUNT = 30;
-    static final double MOTOR_SCALE_DIFFERENCE = 1;
+    static final double MOTOR_SCALE_DIFFERENCE = 1.0;
     boolean currentlyRunningToJunction = false;
 
 
@@ -112,12 +112,10 @@ public class SwingArm {
 
 
         if (gamepad.right_stick_y != 0) {
-            if (swingArmMotor.getCurrentPosition() < HIGH_POINT_COUNT) {
-                targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
-                swingArmMotor.setTargetPosition(targetPositionCount);
-                swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
-            }
-        } else if (!currentlyRunningToJunction){
+            targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
+            swingArmMotor.setTargetPosition(targetPositionCount);
+            swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
+        } else if (!currentlyRunningToJunction) {
             targetPositionCount = swingArmMotor.getCurrentPosition();
         }
     }

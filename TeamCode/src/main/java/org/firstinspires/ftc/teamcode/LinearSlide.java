@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -103,19 +104,12 @@ public class LinearSlide {
             setPosition(3);
         }
 
-        if (!linearSlideMotor.isBusy()) {
-            if (gamepad.dpad_up) {
-//                if (linearSlideMotor.getCurrentPosition() < HIGH_TARGET_COUNT) {
-                    linearSlideMotor.setPower(ADJUSTMENT_SPEED);
-//                } else {
-//                    linearSlideMotor.setPower(0);
-//                }
-            } else if (gamepad.dpad_down) {
-//                if (linearSlideMotor.getCurrentPosition() > 5) {
-                    linearSlideMotor.setPower(-ADJUSTMENT_SPEED);
-//                } else {
-//                    linearSlideMotor.setPower(0);
-//                }
+
+        if (linearSlideMotor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
+            if (gamepad.left_stick_y != 0) {
+                if (linearSlideMotor.getCurrentPosition() > LOW_TARGET_COUNT && linearSlideMotor.getCurrentPosition() < HIGH_TARGET_COUNT) {
+                    linearSlideMotor.setPower(-gamepad.left_stick_y * MAXIMUM_SPEED);
+                }
             } else {
                 linearSlideMotor.setPower(0);
             }
