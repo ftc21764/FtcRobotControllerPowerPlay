@@ -15,7 +15,9 @@ public class LinearSlide {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Gamepad gamepad;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
+
+    //minimum manual count= the lowest position the linear slide can go to when adjusting manually
 
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
@@ -26,7 +28,7 @@ public class LinearSlide {
 
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
-
+    static final int MINIMUM_MANUAL_COUNT = 0;
     static final int LOW_TARGET_COUNT = 100;
     static final int MIDDLE_TARGET_COUNT = 600;
     static final int HIGH_TARGET_COUNT = 1300; //110? NOT FUNCTIONAL UNTIL CHAIN
@@ -44,7 +46,7 @@ public class LinearSlide {
         //use the below line if the motor runs the wrong way!!
         linearSlideMotor.setDirection(DcMotor.Direction.REVERSE);
         linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -106,12 +108,22 @@ public class LinearSlide {
 
 
         if (linearSlideMotor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
-            if (gamepad.left_stick_y != 0) {
-                if (linearSlideMotor.getCurrentPosition() > LOW_TARGET_COUNT && linearSlideMotor.getCurrentPosition() < HIGH_TARGET_COUNT) {
+            if (gamepad.left_stick_y > 0) {
+                //moves down
+                if (linearSlideMotor.getCurrentPosition() >= MINIMUM_MANUAL_COUNT) {
                     linearSlideMotor.setPower(-gamepad.left_stick_y * MAXIMUM_SPEED);
+                    telemetry.addData("Current LS Motor Speed", linearSlideMotor.getPower());
+                }
+            } else if (gamepad.left_stick_y < 0) {
+                //moves up
+                if (linearSlideMotor.getCurrentPosition() <= HIGH_TARGET_COUNT) {
+                    linearSlideMotor.setPower(-gamepad.left_stick_y * MAXIMUM_SPEED);
+                    telemetry.addData("Current LS Motor Speed", linearSlideMotor.getPower());
                 }
             } else {
+                //stops movement
                 linearSlideMotor.setPower(0);
+                telemetry.addData("Current LS Motor Speed", 0);
             }
         }
     }

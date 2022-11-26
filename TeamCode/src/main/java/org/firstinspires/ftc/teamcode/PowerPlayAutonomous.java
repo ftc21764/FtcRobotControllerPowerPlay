@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,6 +43,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.List;
 
 /**
  *  This file illustrates the concept of driving an autonomous path based on Gyro heading and encoder counts.
@@ -104,6 +107,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     protected LinearSlide         linearSlide = null;
     protected Intake        intake = null;
     protected SwingArm      swingArm = null;
+    protected ElapsedTime runtime = new ElapsedTime();
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -151,6 +155,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // If your robot starts on the left side in the driver's view, (A5 or F2), set to -1
     protected int     reverseTurnsForLeftSide            = 1;
 
+    //this sets up for bulk reads!
+    protected List<LynxModule> allHubs;
+
     protected void setupRobot(BNO055IMU.AngleUnit imuUnits) {
         // Initialize the drive system variables.
         leftDriveB  = hardwareMap.get(DcMotor.class, "left_driveB");
@@ -185,6 +192,13 @@ public class PowerPlayAutonomous extends LinearOpMode {
         leftDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDriveF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDriveB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        allHubs = hardwareMap.getAll(LynxModule.class);
+
+        //sets up for bulk reads in manual mode! Read about it here: https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
 
     /**
@@ -296,7 +310,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
                 driveStraight(DRIVE_SPEED, -47.0, -90.0);
             }
         }
-*******************/
+*/
         driveStraight(DRIVE_SPEED, 28.0, 0.0);
 
 
@@ -388,10 +402,12 @@ public class PowerPlayAutonomous extends LinearOpMode {
                 // Apply the turning correction to the current driving speed.
                 moveRobot(driveSpeed, turnSpeed);
 
+                mechanismLoop();
+
                 // Display drive status for the driver.
                 sendTelemetry(true);
 
-                mechanismLoop();
+                clearBulkCache();
             }
 
             // Stop all motion & Turn off RUN_TO_POSITION
@@ -434,10 +450,12 @@ public class PowerPlayAutonomous extends LinearOpMode {
             // Pivot in place by applying the turning correction
             moveRobot(0, turnSpeed);
 
+            mechanismLoop();
+
             // Display drive status for the driver.
             sendTelemetry(false);
 
-            mechanismLoop();
+            clearBulkCache();
         }
 
         // Stop all motion;
@@ -471,10 +489,13 @@ public class PowerPlayAutonomous extends LinearOpMode {
             // Pivot in place by applying the turning correction
             moveRobot(0, turnSpeed);
 
+            mechanismLoop();
+
             // Display drive status for the driver.
             sendTelemetry(false);
 
-            mechanismLoop();
+            clearBulkCache();
+
         }
 
         // Stop all motion;
@@ -534,13 +555,20 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveB.setPower(rightSpeed);
     }
 
+    protected void clearBulkCache() {
+        // Clears the cache so that it will be refreshed the next time you ask for a sensor value!
+        // Be very sure that this gets called in every loop in your code!!!!
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+    }
+
     /**
      *  Display the various control parameters while driving
      *
      * @param straight  Set to true if we are driving straight, and the encoder positions should be included in the telemetry.
      */
     private void sendTelemetry(boolean straight) {
-
         if (straight) {
             telemetry.addData("Motion", "Drive Straight");
             telemetry.addData("Target Pos LF:RF:LB:RB", "%7d:%7d:%7d:%7d",
@@ -554,6 +582,13 @@ public class PowerPlayAutonomous extends LinearOpMode {
         telemetry.addData("Angle Target:Current", "%5.2f:%5.0f", targetHeading, robotHeading);
         telemetry.addData("Error:Steer",  "%5.1f:%5.1f", headingError, turnSpeed);
         telemetry.addData("Wheel Speeds L:R.", "%5.2f : %5.2f", leftSpeed, rightSpeed);
+
+        //checks the time spent on the loop and adds it to telemetry
+
+        telemetry.addData("Loop Time", (int)runtime.milliseconds());
+
+        runtime.reset();
+
         telemetry.update();
     }
 

@@ -15,7 +15,7 @@ public class SwingArm {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Gamepad gamepad;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
     private int targetPositionCount;
 
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
@@ -28,11 +28,11 @@ public class SwingArm {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
 
-    static final int PICKUP_POINT_COUNT = 5;
-    static final int HIGH_POINT_COUNT = 110; //110? Adjust to same distance from robot as low
+    static final int PICKUP_POINT_COUNT = 3;
+    static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
     static final double MAXIMUM_SPEED = 0.8;
-    static final int ADJUSTMENT_COUNT = 30;
+    static final int ADJUSTMENT_COUNT = 5;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
     boolean currentlyRunningToJunction = false;
 
