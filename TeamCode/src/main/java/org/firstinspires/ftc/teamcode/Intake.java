@@ -19,6 +19,8 @@ public class Intake {
     private ElapsedTime runtime = new ElapsedTime();
     static final int AUTO_RUN_SECONDS = 2;
     static final double MAX_SPEED = 0.5;
+    boolean autonomousRunning = false;
+    boolean teleopRunning = false;
     Gamepad currentGamepad = new Gamepad();
     Gamepad previousGamepad = new Gamepad();
 
@@ -36,6 +38,7 @@ public class Intake {
     }
 
     private void runIntake(double speed) {
+        autonomousRunning = true;
         speed = Range.clip(speed, -1, 1);
         runtime.reset();
         intakeMotor.setPower(speed);
@@ -50,10 +53,11 @@ public class Intake {
     }
 
     public void loop() {
-        if (intakeMotor.isBusy()) {
+        if (autonomousRunning) {
             if (runtime.seconds() > AUTO_RUN_SECONDS) {
                 //checks if a) the motor is done moving to a position, or b) it's been on for way too long
                 intakeMotor.setPower(0);
+                autonomousRunning = false;
             }
         } else {
             readGamepad(gamepad);
@@ -69,10 +73,12 @@ public class Intake {
             // Ignore this exception - it shouldn't happen
         }
 
-        if (!intakeMotor.isBusy()) {
-            if (gamepad.right_trigger > 0) {
+        telemetry.addData("Teleop Running", teleopRunning);
+
+        if (!teleopRunning) {
+            if (currentGamepad.right_trigger > 0) {
                 intakeMotor.setPower(MAX_SPEED);
-            } else if (gamepad.left_trigger > 0) {
+            } else if (currentGamepad.left_trigger > 0) {
                 intakeMotor.setPower(-MAX_SPEED);
             } else {
                 intakeMotor.setPower(0);
@@ -80,19 +86,22 @@ public class Intake {
         }
 
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
-            //hi
-            if (intakeMotor.isBusy()) {
+            if (teleopRunning) {
                 intakeMotor.setPower(0);
+                teleopRunning = false;
             } else {
                 intakeMotor.setPower(MAX_SPEED);
+                teleopRunning = true;
             }
         }
 
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
-            if (intakeMotor.isBusy()) {
+            if (teleopRunning) {
                 intakeMotor.setPower(0);
+                teleopRunning = false;
             } else {
                 intakeMotor.setPower(-MAX_SPEED);
+                teleopRunning = true;
             }
         }
     }

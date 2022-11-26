@@ -31,8 +31,8 @@ public class SwingArm {
     static final int PICKUP_POINT_COUNT = 3;
     static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.8;
-    static final int ADJUSTMENT_COUNT = 5;
+    static final double MAXIMUM_SPEED = 0.6;
+    static final int ADJUSTMENT_COUNT = 2;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
     boolean currentlyRunningToJunction = false;
 
