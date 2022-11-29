@@ -312,7 +312,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
         }
 */
         driveStraight(DRIVE_SPEED, 28.0, 0.0);
-
+        telemetry.addData("Recognized: ", recognizer.recognitionLabel);
+        telemetry.update();
 
         if (recognizer.recognitionLabel == null) {
         } else if (recognizer.recognitionLabel.startsWith("1")) {

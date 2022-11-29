@@ -26,9 +26,9 @@ public class SignalSleeveRecognizer {
 
 
     private static final String[] LABELS = {
-            "1 Bolt",
-            "2 Bulb",
-            "3 Panel"
+            "1_tri",
+            "2_gear",
+            "3_dog"
     };
 
     /*
@@ -60,7 +60,9 @@ public class SignalSleeveRecognizer {
 
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
-    private Recognition bestRecognition = null;
+    private final Recognition bestRecognition = null;
+    private double latestConfidence = 0.0;
+    private final double THRESHOLD = 50.0; //Change based on testing
     public String recognitionLabel = null;
 
     public SignalSleeveRecognizer(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -97,28 +99,33 @@ public class SignalSleeveRecognizer {
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-                telemetry.addData("# Objects Detected", updatedRecognitions.size());
+                //telemetry.addData("# Objects Detected", updatedRecognitions.size());
 
                 // step through the list of recognitions and display image position/size information for each one
                 // Note: "Image number" refers to the randomized image orientation/number
                 for (Recognition recognition : updatedRecognitions) {
-                    double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
-                    double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-                    double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
-                    double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
+                    //double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
+                    //double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+                    //double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
+                    //double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
 
-                    telemetry.addData(""," ");
-                    telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
-                    telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
-                    telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                    //telemetry.addData(""," ");
+                    //telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
+                    //telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
+                    //telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
                     //if (bestRecognition == null || (recognition.getConfidence() > bestRecognition.getConfidence())) {
                         //bestRecognition = recognition;
                         //recognitionLabel = bestRecognition.getLabel();
                     //}
-                    recognitionLabel = recognition.getLabel();
+                    if (recognition.getConfidence() * 100 >= THRESHOLD) {
+                        recognitionLabel = recognition.getLabel();
+                        latestConfidence = recognition.getConfidence() * 100;
+                    }
                 }
             }
+            telemetry.addData("Latest Recognition: ", recognitionLabel);
+            telemetry.addData("Recognition Confidence: ", "%.0f", latestConfidence);
         }
     }
 
