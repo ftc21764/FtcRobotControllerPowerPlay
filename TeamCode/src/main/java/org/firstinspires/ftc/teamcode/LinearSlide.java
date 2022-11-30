@@ -36,8 +36,8 @@ public class LinearSlide {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
     static final int MINIMUM_MANUAL_COUNT = 0;
-    static final int LOW_TARGET_COUNT = 671;
-    static final int MIDDLE_TARGET_COUNT = 3000;
+    static final int LOW_TARGET_COUNT = 3935; //Old number 671
+    static final int MIDDLE_TARGET_COUNT = 675; //Old number 3000
     static final int HIGH_TARGET_COUNT = 3935;
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;

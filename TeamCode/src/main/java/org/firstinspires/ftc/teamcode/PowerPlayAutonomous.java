@@ -243,15 +243,24 @@ public class PowerPlayAutonomous extends LinearOpMode {
         driveStraight(0.3, 6.0, 0);
         turnToHeading(TURN_SPEED, 180);
         // begin setup to drop on medium junction
+
+        // drive to medium junction
+        driveStraight(0.3, -48.0, 180.0);
+        turnToHeading(TURN_SPEED, 135.0);
+        intake.pickUpCone();
+
         linearSlide.setPosition(2);
         swingArm.setPosition(2);
-    /*
-        // drive to medium junction
-        driveStraight(DRIVE_SPEED, -48.0, 180.0);
-        turnToHeading(TURN_SPEED, 135.0);
-        driveStraight(DRIVE_SPEED, 6.0, 135.0);
+
+        holdHeading(TURN_SPEED, 135,2);
+
+        driveStraight(0.3, 11.0, 135.0);
+
+
         // drop cone on low junction
         intake.dropCone();
+
+/*
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
         holdHeading(TURN_SPEED, 45, 2);
         //get to center of square
