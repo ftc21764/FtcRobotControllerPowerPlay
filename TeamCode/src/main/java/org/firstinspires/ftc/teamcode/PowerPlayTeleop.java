@@ -44,10 +44,10 @@ public class PowerPlayTeleop extends PowerPlayAutonomous {
             double backRightPower = (rotY + rotX - rx) / denominator;
 
             // scale the speed down so we don't go too fast (for testing)
-            frontLeftPower *= 0.4;
-            backLeftPower *= 0.4;
-            frontRightPower *= 0.4;
-            backRightPower *= 0.4;
+            frontLeftPower *= 0.75;
+            backLeftPower *= 0.75;
+            frontRightPower *= 0.75;
+            backRightPower *= 0.75;
 
             leftDriveF.setPower(frontLeftPower);
             leftDriveB.setPower(backLeftPower);

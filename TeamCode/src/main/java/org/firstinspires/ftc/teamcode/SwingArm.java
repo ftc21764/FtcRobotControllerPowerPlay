@@ -31,11 +31,11 @@ public class SwingArm {
     static final int PICKUP_POINT_COUNT = 3;
     static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.6;
+    static final double UP_MAXIMUM_SPEED = 0.8;
+    static final double DOWN_MAXIMUM_SPEED = 0.3;
     static final int ADJUSTMENT_COUNT = 2;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
     boolean currentlyRunningToJunction = false;
-
 
     public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
         this.hardwareMap = hardwareMap;
@@ -71,6 +71,7 @@ public class SwingArm {
      * and high (2)
      */
     public void setPosition(int position) {
+        double currentPosition = swingArmMotor.getCurrentPosition();
         if (position == 1) {
             targetPositionCount = PICKUP_POINT_COUNT;
 
@@ -86,9 +87,13 @@ public class SwingArm {
         swingArmMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         runtime.reset();
-        swingArmMotor.setPower(MAXIMUM_SPEED);
-        swingArmMotor2.setPower(MAXIMUM_SPEED);
-
+        if (targetPositionCount > currentPosition) {
+            swingArmMotor.setPower(scaleUpMaximumSpeed(currentPosition));
+            swingArmMotor2.setPower(scaleUpMaximumSpeed(currentPosition));
+        } else {
+            swingArmMotor.setPower(DOWN_MAXIMUM_SPEED);
+            swingArmMotor2.setPower(DOWN_MAXIMUM_SPEED);
+        }
     }
 
 
@@ -109,7 +114,6 @@ public class SwingArm {
             setPosition(2);
             currentlyRunningToJunction = true;
         }
-
 
         if (gamepad.right_stick_y != 0) {
             targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
@@ -147,5 +151,15 @@ public class SwingArm {
             swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
+    }
+
+    public double scaleUpMaximumSpeed(double currentPosition) {
+        double scaledMaximumSpeed;
+        if (currentPosition < (HIGH_POINT_COUNT / 2)) {
+            return UP_MAXIMUM_SPEED;
+        } else {
+            scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;
+        }
+        return Math.max(0.1, scaledMaximumSpeed);
     }
 }

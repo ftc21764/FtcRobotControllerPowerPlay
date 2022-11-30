@@ -139,8 +139,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.27;     // Max driving speed for better distance accuracy.
-    static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
+    static final double     DRIVE_SPEED             = 0.5;     // Max driving speed for better distance accuracy.
+    static final double     TURN_SPEED              = 0.3;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
@@ -176,6 +176,10 @@ public class PowerPlayAutonomous extends LinearOpMode {
         leftDriveF.setDirection(DcMotor.Direction.FORWARD);
         rightDriveB.setDirection(DcMotor.Direction.REVERSE);
         rightDriveF.setDirection(DcMotor.Direction.FORWARD);
+
+        // TODO: Figure out if it's better to use a static variable for imu
+        // and then avoid re-initializing it if you're in teleop mode and it already exists.
+        // That way the current orientation is not reset when the opmode starts.
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -232,85 +236,45 @@ public class PowerPlayAutonomous extends LinearOpMode {
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
-/************  nope
+
 
         //BASE DRIVE PATH:
-        // begin setup to drop on low junction
-//        linearSlide.setPosition(2);
-//        swingArm.setPosition(1);
-        // drive to low junction
-        driveStraight(DRIVE_SPEED, 3.0, 0.0);
-        turnToHeading(TURN_SPEED, 45.0);
-        driveStraight(DRIVE_SPEED, 6.0, 45.0);
+        //turn around
+        driveStraight(0.3, 6.0, 0);
+        turnToHeading(TURN_SPEED, 180);
+        // begin setup to drop on medium junction
+        linearSlide.setPosition(2);
+        swingArm.setPosition(2);
+    /*
+        // drive to medium junction
+        driveStraight(DRIVE_SPEED, -48.0, 180.0);
+        turnToHeading(TURN_SPEED, 135.0);
+        driveStraight(DRIVE_SPEED, 6.0, 135.0);
         // drop cone on low junction
-//        intake.dropCone();
+        intake.dropCone();
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
         holdHeading(TURN_SPEED, 45, 2);
-        // begin setup to pick up cone
-        // linearSlide.setPosition(1);
-        //drive to cone stack
-        driveStraight(DRIVE_SPEED, -6.0, 45.0);
-        turnToHeading(TURN_SPEED, -90.0);
-        driveStraight(DRIVE_SPEED, 24.5, -90.0);
-        turnToHeading(TURN_SPEED, 0.0);
-        driveStraight(DRIVE_SPEED, 49.5, 0.0);
+        //get to center of square
+        driveStraight(DRIVE_SPEED, -6, 135);
         turnToHeading(TURN_SPEED, -90);
-        driveStraight(DRIVE_SPEED, 6, -90);
-        // at this point, the intake should be directly above the cones.
-        // descend on 5-stack of cones
-//        linearSlide.setPosition(-5);
-        // pick up cone
-        // note!! since there is no break between moving the linear slide down and starting the
-        // intake, these things will happen at relatively the same time, meaning that the intake will
-        // be spinning as the linear slide descends. if this doesn't work, add a maintainHeading()
-        // in between the linear slide and intake commands.
-//        intake.pickUpCone();
-        // sleeps for three seconds while the intake picks up a cone. if possible, decrease holdTime.
-//        holdHeading(TURN_SPEED, -90, 3);
-        // begin setup to drop on medium junction
-//        linearSlide.setPosition(2);
-//        swingArm.setPosition(2);
-        // drive to medium junction
-//        driveStraight(DRIVE_SPEED, -53.0, -90.0);
-//        turnToHeading(TURN_SPEED, -135.0);
-//        driveStraight(DRIVE_SPEED, 6.0, -135.0);
-        // drop cone on medium junction
-//        intake.dropCone();
-        // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
-        // holdHeading(TURN_SPEED, -135, 2);
-        // move linear slide and swing arm back in so that we look cool ;D
-//        linearSlide.setPosition(1);
-//        swingArm.setPosition(1);
-        // drive back to cone stack
-        driveStraight(DRIVE_SPEED, -6.0, -135.0);
-        turnToHeading(TURN_SPEED, -90.0);
-        driveStraight(DRIVE_SPEED, 47.0, -90);
-
-
+        // move slide and four bar back to pickup position
+        linearSlide.setPosition(1);
+        swingArm.setPosition(1);
         //check whether recognition label is null, if not, drive to parking space
-
         if (recognizer.recognitionLabel == null) {
             //stay in current place
         } else if (recognizer.recognitionLabel.startsWith("1")) {
             //Drive to parking 1
-            if (reverseTurnsForLeftSide == 1) {
-                driveStraight(DRIVE_SPEED, -47.0, -90.0);
-            } else {
-                //stay in current place
-            }
+            driveStraight(DRIVE_SPEED, -24.0, -90.0);
         } else if (recognizer.recognitionLabel.startsWith("2")) {
-            //Drive to parking 2
-            driveStraight(DRIVE_SPEED, -23.5, -90.0);
-
+            //Stay in parking 2
         } else {
             //Drive to parking 3
-            if (reverseTurnsForLeftSide == 1) {
-                //stay in current place
-            } else {
-                driveStraight(DRIVE_SPEED, -47.0, -90.0);
-            }
+            driveStraight(DRIVE_SPEED, 24.0, -90.0);
         }
 */
+
+/* code from first competition!
         driveStraight(DRIVE_SPEED, 28.0, 0.0);
         telemetry.addData("Recognized: ", recognizer.recognitionLabel);
         telemetry.update();
@@ -326,13 +290,14 @@ public class PowerPlayAutonomous extends LinearOpMode {
             driveStraight(DRIVE_SPEED, 24, -90.0);
         }
         turnToHeading(TURN_SPEED, 0.0);
-
+*/
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);
         // Pause to display last telemetry message.
     }
+
 
     /*
      * ====================================================================================================

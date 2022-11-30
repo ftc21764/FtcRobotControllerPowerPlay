@@ -16,9 +16,16 @@ public class LinearSlide {
     private final Telemetry telemetry;
     private final Gamepad gamepad;
     private final ElapsedTime runtime = new ElapsedTime();
+    private int targetPosition = 0;
 
     //minimum manual count= the lowest position the linear slide can go to when adjusting manually
 
+    //NEW
+    // low = linear slide just high enough to score on ground junction (with arm in lower pos)
+    // medium = linear slide high enough to drive the intake above a stack of 5 cones
+    // high = linear slide high enough to score on the low and high junctions
+
+    //OLD
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
 
@@ -29,12 +36,12 @@ public class LinearSlide {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
     static final int MINIMUM_MANUAL_COUNT = 0;
-    static final int LOW_TARGET_COUNT = 100;
-    static final int MIDDLE_TARGET_COUNT = 600;
-    static final int HIGH_TARGET_COUNT = 1300; //110? NOT FUNCTIONAL UNTIL CHAIN
+    static final int LOW_TARGET_COUNT = 671;
+    static final int MIDDLE_TARGET_COUNT = 3000;
+    static final int HIGH_TARGET_COUNT = 3935;
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.45;
+    static final double MAXIMUM_SPEED = 0.8;
     static final double ADJUSTMENT_SPEED = 0.95;
 
 
@@ -63,10 +70,10 @@ public class LinearSlide {
      * on a stack of five is -5, on a stack of four is -4, three is -3, etc. Only -5 is currently defined.
      */
     public void setPosition(int position) {
-        int targetPosition;
-        if (linearSlideMotor.isBusy()) {
-            return;
-        } else if (position == 1) {
+        //        if (linearSlideMotor.isBusy()) {
+        //            return;
+        //        } else {
+        if (position == 1) {
             targetPosition = LOW_TARGET_COUNT;
         } else if (position == 2) {
             targetPosition = MIDDLE_TARGET_COUNT;
@@ -99,13 +106,14 @@ public class LinearSlide {
      */
     private void readGamepad(Gamepad gamepad) {
         if (gamepad.a) {
-            setPosition(1);
-        } else if (gamepad.x || gamepad.b) {
             setPosition(2);
+        } else if (gamepad.x) {
+            setPosition(3);
+        } else if (gamepad.b) {
+            setPosition(1);
         } else if (gamepad.y) {
             setPosition(3);
         }
-
 
         if (linearSlideMotor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
             if (gamepad.left_stick_y > 0) {
@@ -145,5 +153,6 @@ public class LinearSlide {
             telemetry.addData("Linear Slide Position is:", linearSlideMotor.getCurrentPosition());
             readGamepad(gamepad);
         }
+        telemetry.addData("Linear Slide Target Position is:", targetPosition);
     }
 }
