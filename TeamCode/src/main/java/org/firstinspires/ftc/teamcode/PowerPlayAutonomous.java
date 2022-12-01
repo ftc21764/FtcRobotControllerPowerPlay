@@ -242,33 +242,32 @@ public class PowerPlayAutonomous extends LinearOpMode {
         //turn around
         driveStraight(0.3, 6.0, 0);
         turnToHeading(TURN_SPEED, 180);
-        // begin setup to drop on medium junction
 
         // drive to medium junction
         driveStraight(0.3, -48.0, 180.0);
         turnToHeading(TURN_SPEED, 135.0);
         intake.pickUpCone();
 
-        linearSlide.setPosition(2);
-        swingArm.setPosition(2);
+        // begin setup to drop on medium junction
+        moveToMediumPosition();
 
         holdHeading(TURN_SPEED, 135,2);
 
         driveStraight(0.3, 11.0, 135.0);
 
-
-        // drop cone on low junction
+        // drop cone on medium junction
         intake.dropCone();
 
-/*
         // sleeps for two seconds while the intake drops the cone. if possible, decrease holdTime.
         holdHeading(TURN_SPEED, 45, 2);
+
         //get to center of square
         driveStraight(DRIVE_SPEED, -6, 135);
         turnToHeading(TURN_SPEED, -90);
-        // move slide and four bar back to pickup position
-        linearSlide.setPosition(1);
-        swingArm.setPosition(1);
+
+        // move slide and four bar back to intake position
+        moveToIntakePosition();
+
         //check whether recognition label is null, if not, drive to parking space
         if (recognizer.recognitionLabel == null) {
             //stay in current place
@@ -281,7 +280,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
             //Drive to parking 3
             driveStraight(DRIVE_SPEED, 24.0, -90.0);
         }
-*/
+
 
 /* code from first competition!
         driveStraight(DRIVE_SPEED, 28.0, 0.0);
@@ -582,6 +581,31 @@ public class PowerPlayAutonomous extends LinearOpMode {
         // Save a new heading offset equal to the current raw heading.
         headingOffset = getRawHeading();
         robotHeading = 0;
+    }
+
+    public void moveToGroundPosition() {
+        linearSlide.setPosition(1);
+        swingArm.setPosition(1);
+    }
+
+    public void moveToLowPosition() {
+        linearSlide.setPosition(3);
+        swingArm.setPosition(1);
+    }
+
+    public void moveToMediumPosition() {
+        linearSlide.setPosition(1);
+        swingArm.setPosition(2);
+    }
+
+    public void moveToHighPosition() {
+        linearSlide.setPosition(3);
+        swingArm.setPosition(2);
+    }
+
+    public void moveToIntakePosition() {
+        linearSlide.setPosition(2);
+        swingArm.setPosition(1);
     }
 }
 

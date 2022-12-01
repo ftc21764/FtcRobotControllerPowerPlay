@@ -99,10 +99,13 @@ public class SwingArm {
 
     /**
      * Senses whether a button is being pushed.
-     * If a button is pushed, it will set the swing arm to a desired height. Push A (ground/pickup)
-     * or X (low junction) for low position, or B (medium junction) or Y (high junction) for high position.
-     * Next, if the swing arm motor isn't busy with moving to a position, check if left or right
-     * has been pressed on the dpad. If it has been, adjust the swing arm up (dpad right) or down (dpad left),
+     * If a button is pushed, it will set the swing arm to a desired height.
+     * If a is pushed, it will go to the low position, and the slide will also go to low to prepare to score on ground.
+     * If b is pushed, it will go to the low position, and the slide will go to high to prepare to score on low.
+     * If x is pushed, it will go to the high position, and the slide will go to low to prepare to score on medium.
+     * If y is pushed, it will go to the high position, and the slide will also go to high to prepare to score on high.
+     * Next, if the swing arm motor isn't busy with moving to a position, check if the right joystick is being used.
+     * If it has been, adjust the swing arm up (joystick up) or down (joystick down),
      * and if it hasn't, make sure that the motor speed is 0.
      * @param gamepad What gamepad will be used
      */
@@ -155,7 +158,7 @@ public class SwingArm {
 
     public double scaleUpMaximumSpeed(double currentPosition) {
         double scaledMaximumSpeed;
-        if (currentPosition < (HIGH_POINT_COUNT / 2)) {
+        if (currentPosition < (HIGH_POINT_COUNT / 2.0)) {
             return UP_MAXIMUM_SPEED;
         } else {
             scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;

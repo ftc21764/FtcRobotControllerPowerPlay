@@ -20,11 +20,6 @@ public class LinearSlide {
 
     //minimum manual count= the lowest position the linear slide can go to when adjusting manually
 
-    //NEW
-    // low = linear slide just high enough to score on ground junction (with arm in lower pos)
-    // medium = linear slide high enough to drive the intake above a stack of 5 cones
-    // high = linear slide high enough to score on the low and high junctions
-
     //OLD
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
@@ -35,9 +30,17 @@ public class LinearSlide {
 
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
+
+
+
+    //NEW
+    // low = linear slide just high enough to score on ground junction (with arm in lower pos)
+    // medium = linear slide high enough to drive the intake above a stack of 5 cones
+    // high = linear slide high enough to score on the low and high junctions
+
     static final int MINIMUM_MANUAL_COUNT = 0;
-    static final int LOW_TARGET_COUNT = 3935; //Old number 671
-    static final int MIDDLE_TARGET_COUNT = 675; //Old number 3000
+    static final int LOW_TARGET_COUNT = 671;
+    static final int MIDDLE_TARGET_COUNT = 3000;
     static final int HIGH_TARGET_COUNT = 3935;
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;
@@ -97,8 +100,11 @@ public class LinearSlide {
 
     /**
      * Senses whether a button is being pushed.
-     * If a button is pushed, it will set the linear slide to a desired height. Push A for low,
-     * B or X for medium, and Y for high.
+     * If one of the buttons is pushed, it will set the linear slide to a desired height.
+     * If a is pushed, it will go to the low position, and the four bar will also go to low to prepare to score on ground.
+     * If b is pushed, it will go to the high position, and the four bar will go to low to prepare to score on low.
+     * If x is pushed, it will go to the low position, and the four bar will go to high to prepare to score on medium.
+     * If y is pushed, it will go to the high position, and the four bar will also go to high to prepare to score on high.
      * Next, if the linear slide motor isn't busy with moving to a position, check if up or down
      * has been pressed on the dpad. If it has been, adjust the linear slide up or down, and if
      * it hasn't, make sure that the motor speed is 0.
@@ -106,7 +112,7 @@ public class LinearSlide {
      */
     private void readGamepad(Gamepad gamepad) {
         if (gamepad.a) {
-            setPosition(2);
+            setPosition(1);
         } else if (gamepad.x) {
             setPosition(3);
         } else if (gamepad.b) {
