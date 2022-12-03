@@ -66,12 +66,8 @@ public class Intake {
     }
 
     private void readGamepad(Gamepad gamepad) {
-        try {
-            previousGamepad.copy(currentGamepad);
-            currentGamepad.copy(gamepad);
-        } catch (RobotCoreException e) {
-            // Ignore this exception - it shouldn't happen
-        }
+        previousGamepad.copy(currentGamepad);
+        currentGamepad.copy(gamepad);
 
         telemetry.addData("Teleop Running", teleopRunning);
 
