@@ -139,7 +139,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.5;     // Max driving speed for better distance accuracy.
+    static final double     DRIVE_SPEED             = 0.3;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.3;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
@@ -232,6 +232,17 @@ public class PowerPlayAutonomous extends LinearOpMode {
         rightDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetHeading();
 
+        runAutonomousProgram();
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(1000);
+        // Pause to display last telemetry message.
+    }
+
+
+
+    public void runAutonomousProgram() {
         // Step through each leg of the path,
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
         //          holdHeading() is used after turns to let the heading stabilize
@@ -300,13 +311,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         }
         turnToHeading(TURN_SPEED, 0.0);
 */
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);
-        // Pause to display last telemetry message.
     }
-
 
     /*
      * ====================================================================================================
