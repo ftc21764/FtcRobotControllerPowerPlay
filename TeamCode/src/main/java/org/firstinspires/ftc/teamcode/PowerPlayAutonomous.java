@@ -139,8 +139,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.3;     // Max driving speed for better distance accuracy.
-    static final double     TURN_SPEED              = 0.3;     // Max Turn speed to limit turn rate
+    static final double     DRIVE_SPEED             = 0.5;     // Max driving speed for better distance accuracy.
+    static final double     TURN_SPEED              = 0.4;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
@@ -250,7 +250,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
 
         //BASE DRIVE PATH:
-        //turn around
+        //turn arodund
         // TODO: testing observed that the first driveStraight call doesn't work on the first run, only after a second run would this first call work.
         // TODO: adding this holdHeading call in the hope that it 'wakes up' the robot and the driveStraight command runs on first run.
         // holdHeading(TURN_SPEED,0,1);
@@ -358,10 +358,23 @@ public class PowerPlayAutonomous extends LinearOpMode {
             rightDriveF.setTargetPosition(rightTargetF);
             rightDriveB.setTargetPosition(rightTargetB);
 
+            telemetry.addData("driveStraight", "opModeIsActive");
+            telemetry.addData("targetPositions", "%d : %d : %d : %d", leftTargetF, leftTargetB, rightTargetF, rightTargetB);
+            telemetry.update();
+
             leftDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftDriveB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDriveF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDriveB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            telemetry.addData("maxDriveSpeed", maxDriveSpeed);
+            telemetry.addData("active", opModeIsActive());
+            telemetry.addData("ldf", leftDriveF.isBusy());
+            telemetry.addData("rdf", rightDriveF.isBusy());
+            telemetry.addData("ldb", leftDriveB.isBusy());
+            telemetry.addData("rdb", rightDriveB.isBusy());
+            // Unfortunately we need this because sometimes the motor hasn't recognized yet that it's busy!!
+            //sleep(1000);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
@@ -369,8 +382,9 @@ public class PowerPlayAutonomous extends LinearOpMode {
             moveRobot(maxDriveSpeed, 0);
 
             // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() &&
-                   (leftDriveF.isBusy() && rightDriveF.isBusy() && leftDriveB.isBusy() && rightDriveB.isBusy())) {
+            while (opModeIsActive()) {
+
+                telemetry.addData("driveStraight", "opModeIsActive and all motors are busy!");
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -388,6 +402,11 @@ public class PowerPlayAutonomous extends LinearOpMode {
                 sendTelemetry(true);
 
                 clearBulkCache();
+
+                // Check if ALL motors report not busy
+                if (!(leftDriveF.isBusy() || rightDriveF.isBusy() || leftDriveB.isBusy() || rightDriveB.isBusy())) {
+                    break;
+                }
             }
 
             // Stop all motion & Turn off RUN_TO_POSITION

@@ -19,18 +19,19 @@ public class AutoMediumAndPark extends PowerPlayAutonomous {
         //turn around
         // TODO: testing observed that the first driveStraight call doesn't work on the first run, only after a second run would this first call work.
         // TODO: adding this holdHeading call in the hope that it 'wakes up' the robot and the driveStraight command runs on first run.
-        // holdHeading(TURN_SPEED,0,1);
 
-        driveStraight(DRIVE_SPEED, 30, 0);
+        intake.pickUpCone();
+        driveStraight(DRIVE_SPEED, 35.0, 0.0);
+        driveStraight(DRIVE_SPEED, -5.0, 0.0);
         moveToMediumPosition();
-        turnToHeading(TURN_SPEED, 45);
-        holdHeading(TURN_SPEED, 135,2);
-        driveStraight(DRIVE_SPEED, 11.0, 45);
+        holdHeading(TURN_SPEED, 0.0,2.0);
+        turnToHeading(TURN_SPEED, 45.0);
+        driveStraight(DRIVE_SPEED, 11.0, 45.0);
         intake.dropCone();
-        holdHeading(TURN_SPEED, 45, 2);
-        driveStraight(DRIVE_SPEED, -11, 45);
-        turnToHeading(TURN_SPEED, -90);
-        moveToIntakePosition();
+        holdHeading(TURN_SPEED, 45.0, 2.0);
+        driveStraight(DRIVE_SPEED, -11.0, 45.0);
+        turnToHeading(TURN_SPEED, -90.0);
+        moveToGroundPosition();
 
         //check whether recognition label is null, if not, drive to parking space
         if (recognizer.recognitionLabel == null) {
