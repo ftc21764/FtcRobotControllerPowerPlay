@@ -240,8 +240,11 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         //BASE DRIVE PATH:
         //turn around
+        // TODO: testing observed that the first driveStraight call doesn't work on the first run, only after a second run would this first call work.
+        // TODO: adding this holdHeading call in the hope that it 'wakes up' the robot and the driveStraight command runs on first run.
+        // holdHeading(TURN_SPEED,0,1);
         driveStraight(0.3, 6.0, 0);
-        turnToHeading(TURN_SPEED, 180);
+        turnToHeading(TURN_SPEED, 180);  // TODO: suggest not running turning around. There was a small amount of variance in the direction the robot would travel after turn 180 hich resulted in dropping the cone in slightly different locations sometimes missing the juntion
 
         // drive to medium junction
         driveStraight(0.3, -48.0, 180.0);
@@ -250,10 +253,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
 
         // begin setup to drop on medium junction
         moveToMediumPosition();
-
         holdHeading(TURN_SPEED, 135,2);
-
-        driveStraight(0.3, 11.0, 135.0);
+        driveStraight(0.3, 11.0, 135.0); // TODO: changed speed parameter from DRIVE_SPEED constant to a value to test slower speed in this call due to some variance during testing.
 
         // drop cone on medium junction
         intake.dropCone();
@@ -582,7 +583,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         headingOffset = getRawHeading();
         robotHeading = 0;
     }
-
+    // TODO: can we rename these moveTo* functions for setHeightTo*
     public void moveToGroundPosition() {
         linearSlide.setPosition(1);
         swingArm.setPosition(1);
