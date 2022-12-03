@@ -20,7 +20,7 @@ public class SignalSleeveRecognizer {
      * Here we assume it's an Asset.    Also see method initTfod() below .
      */
     //private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
-    private static final String TFOD_MODEL_ASSET = "21764_PowerPlay_V3.tflite";
+    private static final String TFOD_MODEL_ASSET = "21764_Model_v7.tflite";
     //private static final String TFOD_MODEL_ASSET = "model_21764_v2.tflite";
     // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
 
