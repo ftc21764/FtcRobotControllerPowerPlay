@@ -477,6 +477,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
         ElapsedTime holdTimer = new ElapsedTime();
         holdTimer.reset();
 
+        heading = heading * reverseTurnsForLeftSide;
+
         // keep looping while we have time remaining.
         while (opModeIsActive() && (holdTimer.time() < holdTime)) {
             // Determine required steering to keep on heading
@@ -609,7 +611,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
     }
     // TODO: can we rename these moveTo* functions for setHeightTo*
     public void moveToGroundPosition() {
-        linearSlide.setPosition(1);
+        linearSlide.setPosition(0);
         swingArm.setPosition(1);
     }
 

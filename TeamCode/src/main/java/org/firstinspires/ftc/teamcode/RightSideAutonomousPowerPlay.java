@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * RightSideAutonomousPowerPlay
  * Select this opmode if your robot starts on the right of the field relative to your drivers, in position A2 or F5
  **/
-public class RightSideAutonomousPowerPlay extends PowerPlayAutonomous {
+public class RightSideAutonomousPowerPlay extends AutoMediumAndPark {
 
     public RightSideAutonomousPowerPlay() {
         reverseTurnsForLeftSide = 1;

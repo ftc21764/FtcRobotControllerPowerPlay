@@ -82,8 +82,10 @@ public class LinearSlide {
             targetPosition = MIDDLE_TARGET_COUNT;
         } else if (position == 3) {
             targetPosition = HIGH_TARGET_COUNT;
-        } else if (position == -5){
+        } else if (position == -5) {
             targetPosition = FIVE_STACK_INTAKE_COUNT;
+        } else if (position == 0) {
+            targetPosition = MINIMUM_MANUAL_COUNT;
         } else {
             return;
         }

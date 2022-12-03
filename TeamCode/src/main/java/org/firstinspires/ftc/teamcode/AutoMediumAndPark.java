@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Auto Medium And Park 21764", group="Robot")
-//@Disabled
+@Disabled
 
 public class AutoMediumAndPark extends PowerPlayAutonomous {
 
@@ -45,5 +45,6 @@ public class AutoMediumAndPark extends PowerPlayAutonomous {
             //Drive to parking 3
             driveStraight(DRIVE_SPEED, 24.0, -90.0);
         }
+        turnToHeading(TURN_SPEED,0);
     }
 }
