@@ -155,6 +155,8 @@ public class PowerPlayAutonomous extends LinearOpMode {
     // If your robot starts on the left side in the driver's view, (A5 or F2), set to -1
     protected int     reverseTurnsForLeftSide            = 1;
 
+    protected boolean isAutonomous = true;
+
     //this sets up for bulk reads!
     protected List<LynxModule> allHubs;
 
@@ -167,7 +169,7 @@ public class PowerPlayAutonomous extends LinearOpMode {
         recognizer = new SignalSleeveRecognizer(hardwareMap, telemetry);
         linearSlide = new LinearSlide(hardwareMap, telemetry, gamepad2);
         intake = new Intake(hardwareMap, telemetry, gamepad1);
-        swingArm = new SwingArm(hardwareMap, telemetry, gamepad2);
+        swingArm = new SwingArm(hardwareMap, telemetry, gamepad2, isAutonomous);
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

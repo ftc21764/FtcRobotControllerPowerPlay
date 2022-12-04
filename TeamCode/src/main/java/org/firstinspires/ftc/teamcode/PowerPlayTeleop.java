@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class PowerPlayTeleop extends PowerPlayAutonomous {
     @Override
     public void runOpMode() {
+
+        this.isAutonomous = false;
+
         setupRobot(BNO055IMU.AngleUnit.RADIANS);
         leftDriveF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

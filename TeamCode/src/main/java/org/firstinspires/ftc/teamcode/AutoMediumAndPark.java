@@ -21,8 +21,8 @@ public class AutoMediumAndPark extends PowerPlayAutonomous {
         // TODO: adding this holdHeading call in the hope that it 'wakes up' the robot and the driveStraight command runs on first run.
 
         intake.pickUpCone();
-        driveStraight(DRIVE_SPEED, 35.0, 0.0);
-        driveStraight(DRIVE_SPEED, -5.0, 0.0);
+        driveStraight(DRIVE_SPEED, 37.0, 0.0);
+        driveStraight(DRIVE_SPEED, -7.0, 0.0);
         moveToMediumPosition();
         holdHeading(TURN_SPEED, 0.0,2.0);
         turnToHeading(TURN_SPEED, 45.0);

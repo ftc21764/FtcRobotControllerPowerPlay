@@ -11,7 +11,7 @@ public class SwingArmTest extends LinearOpMode {
     protected ElapsedTime runtime = new ElapsedTime();
     @Override
     public void runOpMode() {
-        swingArm = new SwingArm(hardwareMap, telemetry, gamepad2);
+        swingArm = new SwingArm(hardwareMap, telemetry, gamepad2, false);
         swingArm.setBrakeMode(false);
         while (opModeInInit()) {
             swingArm.initLoop();
