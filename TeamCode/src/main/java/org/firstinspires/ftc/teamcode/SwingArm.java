@@ -36,11 +36,14 @@ public class SwingArm {
     static final int ADJUSTMENT_COUNT = 2;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
     boolean currentlyRunningToJunction = false;
+    boolean isAutonomous;
 
-    public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad) {
+    public SwingArm(HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad, boolean isAutonomous) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.gamepad = gamepad;
+        this.isAutonomous = isAutonomous;
+
         swingArmMotor  = hardwareMap.get(DcMotor.class, "four_bar");
         //use the below line if the motor runs the wrong way!!
         swingArmMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -92,7 +95,8 @@ public class SwingArm {
         if (targetPositionCount > currentPosition) {
             swingArmMotor.setPower(scaleUpMaximumSpeed(currentPosition));
             swingArmMotor2.setPower(scaleUpMaximumSpeed(currentPosition));
-        } else if (currentPosition <= PICKUP_POINT_COUNT) {
+        } else if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
+            // set holding power to 0 when teleop mode, but not in auto mode
             swingArmMotor.setPower(0);
             swingArmMotor2.setPower(0);
         } else {
@@ -170,6 +174,6 @@ public class SwingArm {
         } else {
             scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;
         }
-        return Math.max(0.25, scaledMaximumSpeed);
+        return Math.max(0.4, scaledMaximumSpeed);
     }
 }
