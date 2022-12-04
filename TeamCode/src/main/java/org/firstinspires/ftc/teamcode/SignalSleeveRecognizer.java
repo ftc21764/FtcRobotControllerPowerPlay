@@ -20,6 +20,7 @@ public class SignalSleeveRecognizer {
      * Here we assume it's an Asset.    Also see method initTfod() below .
      */
     //private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite"; //FIRST's Model
+    //private static final String TFOD_MODEL_ASSET = ".tflite" //NEW MODEL
     private static final String TFOD_MODEL_ASSET = "21764_Model_v3.1_3.tflite"; //LATEST MODEL - about 7/10, more distance variety
     //private static final String TFOD_MODEL_ASSET = "21764_Model_v7.tflite"; //SECOND TO LAST MODEL - about 9/10, less distance variety
     //private static final String TFOD_MODEL_ASSET = "model_21764_v2.tflite"; //BACKUP - First Competition
