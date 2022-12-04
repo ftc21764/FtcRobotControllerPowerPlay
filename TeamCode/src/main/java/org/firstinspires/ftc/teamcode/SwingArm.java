@@ -16,7 +16,7 @@ public class SwingArm {
     private final Telemetry telemetry;
     private final Gamepad gamepad;
     private final ElapsedTime runtime = new ElapsedTime();
-    private int targetPositionCount;
+    private int targetPositionCount = PICKUP_POINT_COUNT;
 
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
@@ -71,7 +71,6 @@ public class SwingArm {
      * and high (2)
      */
     public void setPosition(int position) {
-        double currentPosition = swingArmMotor.getCurrentPosition();
         if (position == 1) {
             targetPositionCount = PICKUP_POINT_COUNT;
 
@@ -87,15 +86,20 @@ public class SwingArm {
         swingArmMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         runtime.reset();
+    }
+
+    public void setPower(double currentPosition) {
         if (targetPositionCount > currentPosition) {
             swingArmMotor.setPower(scaleUpMaximumSpeed(currentPosition));
             swingArmMotor2.setPower(scaleUpMaximumSpeed(currentPosition));
+        } else if (currentPosition <= PICKUP_POINT_COUNT) {
+            swingArmMotor.setPower(0);
+            swingArmMotor2.setPower(0);
         } else {
             swingArmMotor.setPower(DOWN_MAXIMUM_SPEED);
             swingArmMotor2.setPower(DOWN_MAXIMUM_SPEED);
         }
     }
-
 
     /**
      * Senses whether a button is being pushed.
@@ -129,10 +133,13 @@ public class SwingArm {
 
 
     public void loop() {
+        double currentPosition = swingArmMotor.getCurrentPosition();
         telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
+        setPower(currentPosition);
         telemetry.addData("Swing arm target position", targetPositionCount);
+        telemetry.addData("SwingArmMotorPower", swingArmMotor.getPower());
 
         if (currentlyRunningToJunction) {
             if (!(swingArmMotor.isBusy() || swingArmMotor2.isBusy())) {

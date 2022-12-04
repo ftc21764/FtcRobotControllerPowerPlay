@@ -19,11 +19,10 @@ public class SignalSleeveRecognizer {
      * has been downloaded to the Robot Controller's SD FLASH memory, it must to be loaded using loadModelFromFile()
      * Here we assume it's an Asset.    Also see method initTfod() below .
      */
-    //private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
-    private static final String TFOD_MODEL_ASSET = "21764_Model_v3.1_3.tflite";
-    //private static final String TFOD_MODEL_ASSET = "model_21764_v2.tflite";
-    // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
-
+    //private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite"; //FIRST's Model
+    private static final String TFOD_MODEL_ASSET = "21764_Model_v3.1_3.tflite"; //LATEST MODEL - about 7/10, more distance variety
+    //private static final String TFOD_MODEL_ASSET = "21764_Model_v7.tflite"; //SECOND TO LAST MODEL - about 9/10, less distance variety
+    //private static final String TFOD_MODEL_ASSET = "model_21764_v2.tflite"; //BACKUP - First Competition
 
     private static final String[] LABELS = {
             "1_tri",

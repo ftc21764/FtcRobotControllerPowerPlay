@@ -114,7 +114,7 @@ public class LinearSlide {
      */
     private void readGamepad(Gamepad gamepad) {
         if (gamepad.a) {
-            setPosition(1);
+            setPosition(0);
         } else if (gamepad.x) {
             setPosition(3);
         } else if (gamepad.b) {
