@@ -76,8 +76,7 @@ public class SwingArm {
     public void setPosition(int position) {
         if (position == 1) {
             targetPositionCount = PICKUP_POINT_COUNT;
-
-        } else if (position == 2) {
+       } else if (position == 2) {
             targetPositionCount = HIGH_POINT_COUNT;
         } else {
             return;
@@ -99,6 +98,13 @@ public class SwingArm {
             // set holding power to 0 when teleop mode, but not in auto mode
             swingArmMotor.setPower(0);
             swingArmMotor2.setPower(0);
+
+            // We know the arm is at the bottom on the hard stop, so reset the encoder counts to 0
+            swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            swingArmMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            swingArmMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         } else {
             swingArmMotor.setPower(DOWN_MAXIMUM_SPEED);
             swingArmMotor2.setPower(DOWN_MAXIMUM_SPEED);
