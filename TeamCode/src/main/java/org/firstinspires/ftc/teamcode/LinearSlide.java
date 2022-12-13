@@ -44,7 +44,7 @@ public class LinearSlide {
     static final int HIGH_TARGET_COUNT = 3935;
     static final int FIVE_STACK_INTAKE_COUNT = 7;
     static final int TIMEOUT_SECONDS = 10;
-    static final double MAXIMUM_SPEED = 0.8;
+    static final double MAXIMUM_SPEED = 1.0;
     static final double ADJUSTMENT_SPEED = 0.95;
 
 

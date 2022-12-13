@@ -174,6 +174,6 @@ public class SwingArm {
         } else {
             scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;
         }
-        return Math.max(0.4, scaledMaximumSpeed);
+        return Math.min(0.2, scaledMaximumSpeed);
     }
 }
