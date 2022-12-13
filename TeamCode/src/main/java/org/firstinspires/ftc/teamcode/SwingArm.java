@@ -31,7 +31,7 @@ public class SwingArm {
     static final int PICKUP_POINT_COUNT = 3;
     static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
-    static final double UP_MAXIMUM_SPEED = 0.8;
+    static final double UP_MAXIMUM_SPEED = 0.5;
     static final double DOWN_MAXIMUM_SPEED = 0.3;
     static final int ADJUSTMENT_COUNT = 2;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
@@ -168,12 +168,21 @@ public class SwingArm {
     }
 
     public double scaleUpMaximumSpeed(double currentPosition) {
-        double scaledMaximumSpeed;
-        if (currentPosition < (HIGH_POINT_COUNT / 2.0)) {
-            return UP_MAXIMUM_SPEED;
-        } else {
-            scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;
-        }
-        return Math.min(0.2, scaledMaximumSpeed);
+        // We originally developed this function in an attempt to slow the movement down
+        // near the top of the swing arm's movement, since it was crashing into its hard stop.
+        // Later on we learned that a motor has its maximum amount of torque when it's run at
+        // 50% of its power. So we currently think the best power to use for all movement of
+        // the swing arm is 50%. If it violently hits the hard stop in the "up" position, then
+        // we need to examine the HIGH_POINT_COUNT and possibly make it lower, so that the
+        // PID loop becomes responsible for slowing the movement at the top.
+        return UP_MAXIMUM_SPEED;
+
+        //double scaledMaximumSpeed;
+        //if (currentPosition < (HIGH_POINT_COUNT / 2.0)) {
+        //    return UP_MAXIMUM_SPEED;
+        //} else {
+        //    scaledMaximumSpeed = Math.sin((currentPosition / (double) HIGH_POINT_COUNT) * 3.14159) * UP_MAXIMUM_SPEED;
+        //}
+        //return Math.max(0.2, scaledMaximumSpeed);
     }
 }
