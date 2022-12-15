@@ -205,6 +205,12 @@ public class PowerPlayAutonomous extends LinearOpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
+        // By default the value is 250ms... we send data to Driver Station 4x per second.
+        // We can see if our loop runs faster if we essentially disable telemetry by putting
+        // a high number here.
+        // Change this so that we keep telemetry on during init but disable it during run mode
+        //telemetry.setMsTransmissionInterval(10000);
     }
 
     /**

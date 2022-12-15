@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -31,7 +33,7 @@ public class SwingArm {
     static final int PICKUP_POINT_COUNT = 3;
     static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
-    static final double UP_MAXIMUM_SPEED = 0.5;
+    static final double UP_MAXIMUM_SPEED = 0.9;
     static final double DOWN_MAXIMUM_SPEED = 0.3;
     static final int ADJUSTMENT_COUNT = 2;
     static final double MOTOR_SCALE_DIFFERENCE = 1.0;
@@ -91,7 +93,11 @@ public class SwingArm {
     }
 
     public void setPower(double currentPosition) {
-        if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
+        if (targetPositionCount > currentPosition) {
+            //if it's going up, it needs to actually set the power xD It won't work if you take this out
+            swingArmMotor.setPower(UP_MAXIMUM_SPEED);
+            swingArmMotor2.setPower(UP_MAXIMUM_SPEED);
+        } else if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
             // set holding power to 0 when teleop mode, but not in auto mode
             swingArmMotor.setPower(0);
             swingArmMotor2.setPower(0);
@@ -123,6 +129,7 @@ public class SwingArm {
             currentlyRunningToJunction = true;
         }
 
+        telemetry.addData("Gamepad right stick/left stick:", "%f %f", gamepad.right_stick_y, gamepad.left_stick_y);
         if (gamepad.right_stick_y > 0.1 || gamepad.right_stick_y < -0.1 ) {
             targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
             swingArmMotor.setTargetPosition(targetPositionCount);
@@ -142,12 +149,22 @@ public class SwingArm {
         setPower(currentPosition);
         telemetry.addData("Swing arm target position", targetPositionCount);
         telemetry.addData("SwingArmMotorPower", swingArmMotor.getPower());
+        telemetry.addData("SwingArm Currently Running to Junction", currentlyRunningToJunction);
 
         if (currentlyRunningToJunction) {
             if (!(swingArmMotor.isBusy() || swingArmMotor2.isBusy())) {
                 currentlyRunningToJunction = false;
             }
         }
+
+        // Testing the PID loop rule coefficients
+        //DcMotorEx samEx1 = (DcMotorEx)swingArmMotor;
+        //DcMotorEx samEx2 = (DcMotorEx)swingArmMotor2;
+        //int tolerance = samEx1.getTargetPositionTolerance();
+        //PIDFCoefficients coeff = samEx1.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //telemetry.addData("Swing Arm Motor 1 PIDF+tolerance", "%f, %f, %f, %f, %d",
+        //        coeff.p, coeff.i, coeff.d, coeff.f, tolerance);
     }
 
 
