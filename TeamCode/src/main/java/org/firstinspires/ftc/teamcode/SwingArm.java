@@ -91,23 +91,14 @@ public class SwingArm {
     }
 
     public void setPower(double currentPosition) {
-        if (targetPositionCount > currentPosition) {
-            swingArmMotor.setPower(scaleUpMaximumSpeed(currentPosition));
-            swingArmMotor2.setPower(scaleUpMaximumSpeed(currentPosition));
-        } else if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
+        if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
             // set holding power to 0 when teleop mode, but not in auto mode
             swingArmMotor.setPower(0);
             swingArmMotor2.setPower(0);
-
-            // We know the arm is at the bottom on the hard stop, so reset the encoder counts to 0
-//            swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            swingArmMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            swingArmMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         } else {
-            swingArmMotor.setPower(DOWN_MAXIMUM_SPEED);
-            swingArmMotor2.setPower(DOWN_MAXIMUM_SPEED);
+            //We used to have different speeds for up and down, but that didn't seem to be helping. Now we just use UP_MAXIMUM_SPEED for everything.
+            swingArmMotor.setPower(UP_MAXIMUM_SPEED);
+            swingArmMotor2.setPower(UP_MAXIMUM_SPEED);
         }
     }
 
@@ -137,8 +128,8 @@ public class SwingArm {
             swingArmMotor.setTargetPosition(targetPositionCount);
             swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
         } else if (!currentlyRunningToJunction) {
-            //Not sure why this is running, it might be a bug. Temporarily removing.
-//            targetPositionCount = swingArmMotor.getCurrentPosition();
+            //This is so that if you let go of the joystick, it immediately stops the arm from moving. Not a bug!!!
+            targetPositionCount = swingArmMotor.getCurrentPosition();
         }
     }
 
@@ -148,8 +139,7 @@ public class SwingArm {
         telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
-//        setPower(currentPosition);
-        setPower(0.9);
+        setPower(currentPosition);
         telemetry.addData("Swing arm target position", targetPositionCount);
         telemetry.addData("SwingArmMotorPower", swingArmMotor.getPower());
 
@@ -159,6 +149,7 @@ public class SwingArm {
             }
         }
     }
+
 
     public void initLoop() {
         telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
