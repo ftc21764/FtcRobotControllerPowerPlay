@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -12,13 +13,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SwingArm {
 
-    protected DcMotor swingArmMotor;
+    //protected DcMotor swingArmMotor;
     protected DcMotor swingArmMotor2;
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Gamepad gamepad;
     private final ElapsedTime runtime = new ElapsedTime();
-    private int targetPositionCount = PICKUP_POINT_COUNT;
 
     // low= the position that the linear slide goes to to pick up cones and/or deposit on ground junctions.
     // this should be at a height where the empty intake can comfortably fit over a stack of five cones.
@@ -30,13 +30,15 @@ public class SwingArm {
     // high= the position for the high junction
     // this should be at a height where the intake with a cone can comfortably fit over the high junction
 
-    static final int PICKUP_POINT_COUNT = 3;
-    static final int HIGH_POINT_COUNT = 233; //110? Adjust to same distance from robot as low
+    //Max counts: 3150
+
+    static final int PICKUP_POINT_COUNT = 100;  // 10
+    static final int HIGH_POINT_COUNT = 3525; // 3350 110? Adjust to same distance from robot as low
     //static final int TIMEOUT_SECONDS = 10;
-    static final double UP_MAXIMUM_SPEED = 0.9;
+    static final double UP_MAXIMUM_SPEED = 1.0;
     static final double DOWN_MAXIMUM_SPEED = 0.3;
-    static final int ADJUSTMENT_COUNT = 2;
-    static final double MOTOR_SCALE_DIFFERENCE = 1.0;
+    static final int ADJUSTMENT_COUNT = 30;
+    private int targetPositionCount = PICKUP_POINT_COUNT;
     boolean currentlyRunningToJunction = false;
     boolean isAutonomous;
 
@@ -46,27 +48,26 @@ public class SwingArm {
         this.gamepad = gamepad;
         this.isAutonomous = isAutonomous;
 
-        swingArmMotor  = hardwareMap.get(DcMotor.class, "four_bar");
+        //swingArmMotor  = hardwareMap.get(DcMotor.class, "four_bar");
         //use the below line if the motor runs the wrong way!!
-        swingArmMotor.setDirection(DcMotor.Direction.REVERSE);
-        swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //swingArmMotor.setDirection(DcMotor.Direction.REVERSE);
+        //swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         swingArmMotor2  = hardwareMap.get(DcMotor.class, "four_bar_two");
         //use the below line if the motor runs the wrong way!!
-        swingArmMotor2.setDirection(DcMotor.Direction.REVERSE);
+        swingArmMotor2.setDirection(DcMotor.Direction.FORWARD);
         swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         swingArmMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //you need to set a position count BEFORE switching to runToPosition mode!!
+        swingArmMotor2.setTargetPosition(PICKUP_POINT_COUNT);
 
-        swingArmMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        telemetry.addData("Swing Arm Motor 1 Starting At",  "%7d",
-                swingArmMotor.getCurrentPosition());
+        //telemetry.addData("Swing Arm Motor 1 Starting At",  "%7d",
+                //swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Starting At",  "%7d",
                 swingArmMotor2.getCurrentPosition());
-
     }
 
     /**
@@ -83,11 +84,12 @@ public class SwingArm {
         } else {
             return;
         }
-        swingArmMotor.setTargetPosition(targetPositionCount);
-        swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
+        //swingArmMotor.setTargetPosition(targetPositionCount);
+        swingArmMotor2.setTargetPosition((int)targetPositionCount);
 
-        swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         swingArmMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        currentlyRunningToJunction = true;
 
         runtime.reset();
     }
@@ -95,15 +97,15 @@ public class SwingArm {
     public void setPower(double currentPosition) {
         if (targetPositionCount > currentPosition) {
             //if it's going up, it needs to actually set the power xD It won't work if you take this out
-            swingArmMotor.setPower(UP_MAXIMUM_SPEED);
+            //swingArmMotor.setPower(UP_MAXIMUM_SPEED);
             swingArmMotor2.setPower(UP_MAXIMUM_SPEED);
         } else if (!isAutonomous && (currentPosition <= PICKUP_POINT_COUNT + 10)) {
             // set holding power to 0 when teleop mode, but not in auto mode
-            swingArmMotor.setPower(0);
+            //swingArmMotor.setPower(0);
             swingArmMotor2.setPower(0);
         } else {
             //We used to have different speeds for up and down, but that didn't seem to be helping. Now we just use UP_MAXIMUM_SPEED for everything.
-            swingArmMotor.setPower(UP_MAXIMUM_SPEED);
+            //swingArmMotor.setPower(UP_MAXIMUM_SPEED);
             swingArmMotor2.setPower(UP_MAXIMUM_SPEED);
         }
     }
@@ -123,39 +125,45 @@ public class SwingArm {
     private void readGamepad(Gamepad gamepad) {
         if (gamepad.a || gamepad.x) {
             setPosition(1);
-            currentlyRunningToJunction = true;
         } else if (gamepad.b || gamepad.y) {
             setPosition(2);
-            currentlyRunningToJunction = true;
         }
 
         telemetry.addData("Gamepad right stick/left stick:", "%f %f", gamepad.right_stick_y, gamepad.left_stick_y);
         if (gamepad.right_stick_y > 0.1 || gamepad.right_stick_y < -0.1 ) {
             targetPositionCount = Range.clip((int)(targetPositionCount + ADJUSTMENT_COUNT*-gamepad.right_stick_y), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
-            swingArmMotor.setTargetPosition(targetPositionCount);
-            swingArmMotor2.setTargetPosition((int)(targetPositionCount * MOTOR_SCALE_DIFFERENCE));
+            //swingArmMotor.setTargetPosition(targetPositionCount);
+            swingArmMotor2.setTargetPosition((int)targetPositionCount);
+            telemetry.addData("Manual Branch", "Adjustment made");
         } else if (!currentlyRunningToJunction) {
             //This is so that if you let go of the joystick, it immediately stops the arm from moving. Not a bug!!!
-            targetPositionCount = swingArmMotor.getCurrentPosition();
+            targetPositionCount = Range.clip((int)swingArmMotor2.getCurrentPosition(), PICKUP_POINT_COUNT, HIGH_POINT_COUNT);
+            swingArmMotor2.setTargetPosition((int)targetPositionCount);
+            telemetry.addData("Manual Branch", "Stop moving");
+        } else {
+            telemetry.addData("Manual Branch", "Running to Junction");
+
         }
     }
 
 
     public void loop() {
-        double currentPosition = swingArmMotor.getCurrentPosition();
-        telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
+        double currentPosition = swingArmMotor2.getCurrentPosition();
+        //telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
         readGamepad(gamepad);
         setPower(currentPosition);
         telemetry.addData("Swing arm target position", targetPositionCount);
-        telemetry.addData("SwingArmMotorPower", swingArmMotor.getPower());
+        telemetry.addData("SwingArmMotorPower", swingArmMotor2.getPower());
         telemetry.addData("SwingArm Currently Running to Junction", currentlyRunningToJunction);
 
         if (currentlyRunningToJunction) {
-            if (!(swingArmMotor.isBusy() || swingArmMotor2.isBusy())) {
+            if (!swingArmMotor2.isBusy()) {
                 currentlyRunningToJunction = false;
             }
         }
+
+        swingArmMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Testing the PID loop rule coefficients
         //DcMotorEx samEx1 = (DcMotorEx)swingArmMotor;
@@ -169,16 +177,16 @@ public class SwingArm {
 
 
     public void initLoop() {
-        telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
+        //telemetry.addData("Swing Arm Motor 1 Position is:", swingArmMotor.getCurrentPosition());
         telemetry.addData("Swing Arm Motor 2 Position is:", swingArmMotor2.getCurrentPosition());
     }
 
     public void setBrakeMode(boolean b) {
         if (b) {
-            swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } else {
-            swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            //swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             swingArmMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }

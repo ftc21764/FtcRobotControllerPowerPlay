@@ -22,11 +22,11 @@ public class AutoMediumAndPark extends PowerPlayAutonomous {
 
         intake.pickUpCone();
         driveStraight(DRIVE_SPEED, 37.0, 0.0);
-        driveStraight(DRIVE_SPEED, -8.5, 0.0);
+        driveStraight(DRIVE_SPEED, -6.5, 0.0);
         moveToMediumPosition();
         holdHeading(TURN_SPEED, 0.0,2.0);
         turnToHeading(TURN_SPEED, 45.0);
-        driveStraight(DRIVE_SPEED, 12.0, 45.0);
+        driveStraight(DRIVE_SPEED, 11.0, 45.0);
         intake.dropCone();
         holdHeading(TURN_SPEED, 45.0, 2.0);
         driveStraight(DRIVE_SPEED, -12.0, 45.0);
